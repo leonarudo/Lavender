@@ -6,6 +6,8 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using HarmonyLib;
+using Lavender.ItemsLib;
+using static Lavender.ItemsLib.ItemHandlerAttributes;
 
 namespace Lavender
 {
@@ -35,6 +37,7 @@ namespace Lavender
             harmony = new Harmony(LCMPluginInfo.PLUGIN_GUID);
 
             harmony.PatchAll(typeof(FurniturePatches));
+            harmony.PatchAll(typeof(ItemPatches));
         }
 
         #region FurnitureLib
@@ -129,6 +132,50 @@ namespace Lavender
             return true;
         }
 
+        #endregion
+
+        #region ItemLib
+
+        public delegate List<Item> ItemDatabaseHandler(List<Item> db);
+        public static Dictionary<string, ItemDatabaseHandler> itemDatabaseHandlers;
+        public static Dictionary<string, string> itemConfigPaths;
+
+        public static bool AddItemDatabaseHandlers(Type type)
+        {
+            MethodInfo[] methods = type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance).Where(m => m.GetCustomAttributes(typeof(ItemDatabaseHandlerAttribute), false).Length > 0).ToArray();
+
+            foreach (MethodInfo method in methods)
+            {
+                ItemDatabaseHandlerAttribute attribute = method.GetCustomAttribute<ItemDatabaseHandlerAttribute>();
+
+                if (!method.IsStatic)
+                {
+                    LavenderLog.Error($"'{method.DeclaringType.Name}.{method.Name}' is an instance method, but Item Database handler methods must be static");
+                    return false;
+                }
+
+                Delegate itemDBHandler = Delegate.CreateDelegate(typeof(ItemDatabaseHandler), method, false);
+                if (itemDBHandler != null)
+                {
+                    if (itemDatabaseHandlers.ContainsKey(attribute.HandlerUID))
+                    {
+                        LavenderLog.Error($"DuplicateHandlerException: '{method.DeclaringType}.{method.Name}' Only one handler method is allowed per UID!");
+                        return false;
+                    }
+                    else
+                    {
+                        itemDatabaseHandlers.Add(attribute.HandlerUID, (ItemDatabaseHandler)itemDBHandler);
+                    }
+                }
+                else
+                {
+                    LavenderLog.Error($"InvalidHandlerSignatureException: '{method.DeclaringType}.{method.Name}' doesn't match any acceptable Item Database handler method signatures! Furniture handler methods should have a 'List<Item>' parameter and should return 'List<Item>'.");
+                    return false;
+                }
+            }
+
+            return true;
+        }
         #endregion
     }
 }

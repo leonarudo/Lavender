@@ -30,6 +30,7 @@
 				<PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.2" PrivateAssets="all" />
 
 				<Reference Include="$(DependsDir)/Assembly-CSharp.dll" Publicize="true" />
+			<Reference Include="$(DependsDir)/Assembly-CSharp-firstpass.dll" Publicize="true" />
 		</ItemGroup>
 
 		<ItemGroup>

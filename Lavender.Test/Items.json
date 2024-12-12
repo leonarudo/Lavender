@@ -1,0 +1,24 @@
+[
+  {
+    "ID": 35171,
+    "Title": "Ground Glass",
+    "Categories": [ "Hardware" ],
+    "Value": 26,
+    "Description": "It used to be a rock",
+    "Stackable": 8,
+    "Appearance": {
+      "Material": "Cement",
+      "SpritePath": "Sprites/Items/Sand_spr",
+      "ColorValue": "RGBA(0.000, 0.000, 0.000, 0.000)",
+      "PrefabPath": "Prefabs/Items/Sand",
+      "PrefabPathMany": "Prefabs/Items/Sand"
+    },
+    "Actions": [],
+    "Attachments": {
+      "Name": "",
+      "Attachment1": "none",
+      "Attachment2": "none"
+    },
+    "Meta": []
+  }
+]
