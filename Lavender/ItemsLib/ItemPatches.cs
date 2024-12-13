@@ -239,5 +239,38 @@ namespace Lavender.ItemsLib
         }
 
         #endregion
+
+        #region ItemDatabase.OnEnable
+        [HarmonyPatch(typeof(ItemDatabase), nameof(ItemDatabase.OnEnable))]
+        [HarmonyPostfix]
+        public static void ItemDatabase_OnEnable_Postfix(ItemDatabase __instance)
+        {
+            List<Item> customItems = Lavender.GetCustomItems();
+
+            LavenderLog.Log($"ItemDatabase OnEnable, CustomItems: {customItems}");
+
+            foreach (Item i in customItems)
+            {
+                ItemDatabase.LoadItemReferencedAssets(i, false);
+            }
+        }
+        #endregion
+
+        #region ItemDatabase.Reload
+        [HarmonyPatch(typeof(ItemDatabase), nameof(ItemDatabase.Reload))]
+        [HarmonyPostfix]
+        public static void ItemDatabase_Reload_Postfix(ItemDatabase __instance)
+        {
+            List<Item> customItems = Lavender.GetCustomItems();
+
+            LavenderLog.Log($"ItemDatabase Reload, CustomItems: {customItems}");
+
+            foreach (Item i in customItems)
+            {
+                LavenderLog.Log($"Item: {i.Title}, Data: {i}");
+                ItemDatabase.LoadItemReferencedAssets(i, false);
+            }
+        }
+        #endregion
     }
 }

@@ -139,6 +139,27 @@ namespace Lavender
         public delegate List<Item> ItemDatabaseHandler(List<Item> db);
         public static Dictionary<string, ItemDatabaseHandler> itemDatabaseHandlers;
         public static Dictionary<string, string> itemConfigPaths;
+        public static List<Item> customItemDatabase;
+
+        public static void AddCustomItemFromString(string jsonString)
+        {
+            LavenderLog.Error($"Test!!!");
+            Item item = (ItemDatabase.DeSerialize(typeof(Item), jsonString)) as Item;
+            AddCustomItem(item);
+        }
+
+        public static void AddCustomItem(Item customItem)
+        {
+            Debug.Log($"Register Custom Item: '{customItem.Title}'");
+            LavenderLog.Log($"Register Custom Item: '{customItem.Title}'");
+            customItemDatabase.Add(customItem);
+        }
+
+        public static List<Item> GetCustomItems()
+        {
+            LavenderLog.Log($"Get Custom Items: '{customItemDatabase.Count}'");
+            return customItemDatabase;
+        }
 
         public static bool AddItemDatabaseHandlers(Type type)
         {
