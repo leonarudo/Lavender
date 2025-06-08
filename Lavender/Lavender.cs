@@ -12,6 +12,7 @@ using FullSerializer;
 using Lavender.CommandLib;
 using Lavender.StorageLib;
 using Lavender.DialogueLib;
+using Lavender.RuntimeImporter;
 
 namespace Lavender
 {
@@ -55,6 +56,47 @@ namespace Lavender
                 LavenderLog.Error(e.ToString());
             }
         }
+
+        #region RuntimeImporter
+
+        public static List<LavenderAssetBundle> lavenderAssets;
+
+        public static void AddLavenderAssets(string ModName, string json_path)
+        {
+            LavenderAssetBundle newBundle = new LavenderAssetBundle(ModName, json_path);
+            if(newBundle != null)
+            {
+                lavenderAssets.Add(newBundle);
+            }
+        }
+
+        // assetID: <ModName>-<id> e.g. Lavender-100
+        public static LavenderAsset? GetLavenderAsset(string assetID)
+        {
+            string[] strings = assetID.Split('-');
+            int id = int.Parse(strings[1]);
+
+            List<LavenderAsset> assets = GetLavenderAssetsFromMod(strings[0]);
+
+            return assets.Find(x => x.ID == id);
+        }
+
+        public static List<LavenderAsset> GetLavenderAssetsFromMod(string ModName)
+        {
+            List<LavenderAsset> result = new List<LavenderAsset>();
+
+            foreach (LavenderAssetBundle bundle in lavenderAssets)
+            {
+                if(bundle.ModName == ModName)
+                {
+                    result.AddRange(bundle.assets);
+                }
+            }
+
+            return result;
+        }
+
+        #endregion
 
         #region FurnitureLib
 
