@@ -6,9 +6,14 @@ using UnityEngine;
 
 namespace Lavender.DialogueLib
 {
-    public class ConversationUtils
+    public static class ConversationUtils
     {
-        // Convenience function to find DialogueEntry's that are responses to the provided entry
+        /// <summary>
+        /// Find DialogueEntry(s) that are direct and immediate responses to the provided entry
+        /// </summary>
+        /// <param name="conversation">Conversation containing the interaction</param>
+        /// <param name="dialogueEntry">A DialogueEntry belonging to the provided Conversation</param>
+        /// <returns>0 or more DialogueEntry(s) responding.  Note that it is possible for a player to respond to themself, or an NPC to respond to themself</returns>
         public static IEnumerable<DialogueEntry> GetResponsesTo(Conversation conversation, DialogueEntry dialogueEntry)
         {
             return dialogueEntry.outgoingLinks.Where((Link l) =>
@@ -20,8 +25,12 @@ namespace Lavender.DialogueLib
             });
         }
 
-        // Convenience function to find only STATIC DialogueEntry's that are responses to the provided entry
-        // A STATIC DialogueEntry does not have any condition set and contains no Lua - ie it is static unchanging text and is always available
+        /// <summary>
+        /// Find DialogueEntry(s) that are direct and immediate responses to the provided entry.  Excludes any that have a userScript, condition, or dynamic text
+        /// </summary>
+        /// <param name="conversation">Conversation containing the interaction</param>
+        /// <param name="dialogueEntry">A DialogueEntry belonging to the provided Conversation</param>
+        /// <returns>0 or more DialogueEntry(s) responding.  Note that it is possible for a player to respond to themself, or an NPC to respond to themself</returns>
         public static IEnumerable<DialogueEntry> GetStaticResponsesTo(Conversation conversation, DialogueEntry dialogueEntry)
         {
             return dialogueEntry.outgoingLinks.Where((Link l) =>
@@ -29,7 +38,7 @@ namespace Lavender.DialogueLib
                 if (l.originConversationID == conversation.id && l.destinationConversationID == conversation.id && l.originDialogueID == dialogueEntry.id)
                 {
                     DialogueEntry target = conversation.GetDialogueEntry(l.destinationDialogueID);
-                    if (target.conditionsString != "" || target.currentDialogueText.Contains("[lua("))
+                    if (target.userScript != "" || target.conditionsString != "" || target.currentDialogueText.Contains("[lua("))
                     {
                         return false;
                     }
@@ -45,8 +54,14 @@ namespace Lavender.DialogueLib
             });
         }
 
-        // Find the soonest DialogueEntry(s) starting at the provided entry that we can add a player response to
-        // If there are somehow multiple (f.ex branching dialogue) then we will only return the ones with a matching node distance
+        /// <summary>
+        /// Find the soonest DialogueEntry(s) accessed from the provided entry that we can add a player response to (and the player response will be selectable ingame)
+        /// May return entries that are not linked to directly by this DialogueEntry - this happens when in a portion of the conversation that will auto-advance through entries (ie a monologue).
+        /// If there are somehow multiple valid results (f.ex branching dialogue) then we will only return the ones with a matching node distance, and only the closest distance.
+        /// </summary>
+        /// <param name="conversation">Conversation containing the interaction</param>
+        /// <param name="entry">The DialogueEntry where we would prefer to add player response.  Note that it may not be possible to respond directly to this entry.</param>
+        /// <returns>1 or more DialogueEntry where the responses can be linked *from*/as a source, and be visible ingame.</returns>
         public static IEnumerable<DialogueEntry> AdvanceToRespondable(Conversation conversation, DialogueEntry entry)
         {
             List<DialogueEntry> visited = new List<DialogueEntry>();
@@ -97,7 +112,12 @@ namespace Lavender.DialogueLib
             return results;
         }
 
-        // Check if any of the responses to the supplied dialogueentry are spoken by an NPC
+        /// <summary>
+        /// Check if any of the responses to the supplied DialogueEntry are spoken by an NPC
+        /// </summary>
+        /// <param name="conversation">Conversation containing the interaction</param>
+        /// <param name="entry">DialogueEntry we are querying.  Note that the speaker of this entry does not matter, we are looking at who is speaking in response to it.</param>
+        /// <returns>true/false</returns>
         public static bool DoResponsesIncludeNPC(Conversation conversation, DialogueEntry entry)
         {
             foreach (var l in entry.outgoingLinks)

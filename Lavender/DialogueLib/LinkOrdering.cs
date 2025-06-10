@@ -2,8 +2,10 @@
 
 namespace Lavender.DialogueLib
 {
-    // Helper class for more accurate control over insertion of links between dialogue entries
-    // The static initializer functions should provide configurations that handle most common usecases
+    /// <summary>
+    /// Helper class for more accurate control over insertion of links between dialogue entries.
+    /// The static initializer functions should provide configurations that handle most common usecases.
+    /// </summary>
     public class LinkOrdering
     {
         public DialogueEntry? AfterEntry = null;
@@ -16,48 +18,85 @@ namespace Lavender.DialogueLib
         public bool PreferLaterIfMatched = true;
         public bool PreferBeforeGoodbye = false;
 
-        // Prefers to place the link last in the available options, but before any "Goodbye"/"(Leave)" option
-        // May miss custom goodbye options, in which case you may need to use BeforeDialogue
+        /// <summary>
+        /// Create a LinkOrdering instance that prefers to place the link last in the available options, but before any "Goodbye"/"(Leave)" option
+        /// May miss custom goodbye options, in which case you may need to use BeforeDialogue
+        /// </summary>
+        /// <returns>A LinkOrdering instance ready for use with ConversationPatcher.Link()</returns>
         public static LinkOrdering DefaultOrdering()
         {
             return new LinkOrdering() { PreferBeforeGoodbye = true, PreferLaterIfMatched = true, PreferLater = true };
         }
 
-        // Try to put the link first in the list.  Note: Multiple links using this will compete for placement (there can only be 1 first place).
+        /// <summary>
+        /// Create a LinkOrdering instance that prefers to place the link first in the list.
+        /// Note: While it will place it first, it places it first at the moment that the link is created.  Overuse of this preset will cause links to get shuffled around.  
+        /// There can be only 1 first.
+        /// </summary>
+        /// <returns>A LinkOrdering instance ready for use with ConversationPatcher.Link()</returns>
         public static LinkOrdering First()
         {
             return new LinkOrdering() { PreferLater = false };
         }
 
-        // Guarantees the link will be placed before the specified response
-        // Will attempt to place the link directly before the response, if possible
+        /// <summary>
+        /// Create a LinkOrdering instance that guarantees the link will be placed before the specified response
+        /// Will attempt to place the link directly before the response, if possible
+        /// </summary>
+        /// <param name="entry">The entry to be in front of in the response list</param>
+        /// <returns>A LinkOrdering instance ready for use with ConversationPatcher.Link()</returns>
         public static LinkOrdering BeforeDialogue(DialogueEntry entry)
         {
             return new LinkOrdering() { BeforeEntry = entry, PreferLater = false, PreferLaterIfMatched = true };
         }
 
-        // Guarantees the link will be placed after the specified response
-        // Will attempt to place the link directly after the response, if possible
+        /// <summary>
+        /// Create a LinkOrdering instance that guarantees the link will be placed after the specified response
+        ///  Will attempt to place the link directly after the response, if possible
+        /// </summary>
+        /// <param name="entry">The entry to put the response after</param>
+        /// <returns>A LinkOrdering instance ready for use with ConversationPatcher.Link()</returns>
         public static LinkOrdering AfterDialogue(DialogueEntry entry)
         {
             return new LinkOrdering() { AfterEntry = entry, PreferLater = true, PreferLaterIfMatched = false };
         }
 
-        // Guarantees the link will be placed before the provided link
-        // Will attempt to place the new link directly before the provided link, if possible
+        /// <summary>
+        /// Create a LinkOrdering instance that guarantees the link will be placed before the provided link
+        /// Will attempt to place the new link directly before the provided link, if possible
+        /// Effectively an alias for BeforeDialogue().
+        /// </summary>
+        /// <param name="link">The link to be in front of in the response list</param>
+        /// <returns>A LinkOrdering instance ready for use with ConversationPatcher.Link()</returns>
         public static LinkOrdering BeforeResponse(Link link)
         {
             return new LinkOrdering() { BeforeLink = link, PreferLater = false, PreferLaterIfMatched = true };
         }
 
-        // Guarantees the link will be placed after the specified link
-        // Will attempt to place the new link directly after the provided link, if possible
+        /// <summary>
+        /// Create a LinkOrdering instance that guarantees the link will be placed after the specified link
+        /// Will attempt to place the new link directly after the provided link, if possible
+        /// Effectively an alias for AfterDialogue().
+        /// </summary>
+        /// <param name="link">The link to put the response after</param>
+        /// <returns>A LinkOrdering instance ready for use with ConversationPatcher.Link()</returns>
         public static LinkOrdering AfterResponse(Link link)
         {
             return new LinkOrdering() { AfterLink = link, PreferLater = true, PreferLaterIfMatched = false };
         }
 
-        public void AttachToDialogueEntry(Conversation conversation, DialogueEntry source, DialogueEntry dest, Link newLink)
+        /// <summary>
+        /// Handles the linking logic.  Not for external use - called automatically by the library.
+        /// Function is exposed should you want to implement your own custom linking logic:
+        /// 1) Subclass LinkOrdering
+        /// 2) Override AttachToDialogueEntry to implement your logic
+        /// 3) Create and pass an instance of your class to ConversationPatcher.Link()
+        /// </summary>
+        /// <param name="conversation">The interaction the linking happens within</param>
+        /// <param name="source">The DialogueEntry that is visible on the screen</param>
+        /// <param name="dest">The DialogueEntry that you are taken to when the response is selected (or automatically if NPC -> NPC or using a Sequence)</param>
+        /// <param name="newLink">The Link object that needs to be inserted into the source.outgoingLinks List.</param>
+        public virtual void AttachToDialogueEntry(Conversation conversation, DialogueEntry source, DialogueEntry dest, Link newLink)
         {
             int minIndex = 0;
             int maxIndex = source.outgoingLinks.Count;

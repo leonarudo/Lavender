@@ -374,11 +374,27 @@ namespace Lavender
 
         #region DialogueLib
 
+        /// <summary>
+        /// Register a conversation patcher.
+        /// Should only be called once per conversation patch (probably during your mod startup).
+        /// Safe to be called at any time.
+        /// Each registered patch should be a unique object instance, even if you have 1 patcher that handles multiple conversations in the same class.
+        /// You can keep a reference to the patcher object after registration, but it is not required.
+        /// </summary>
+        /// <param name="patcher">Instantiated ConversationPatcher object that will be used to patch its conversation</param>
         public static void AddConversationPatcher(ConversationPatcher patcher)
         {
             ConversationPatchesManager.Instance.AddConversationPatcher(patcher);
         }
 
+        /// <summary>
+        /// Fetch all patcher objects that patch conversationName.
+        /// WARNING: Results may include patcher objects from other mods.
+        /// If you need to keep track of your patcher, it is strongly recommended that you do this with a List or variables in your mod instead of using this function.
+        /// This function is provided to be able to check for the presence of other patchers potentially affecting the same conversation - ie conflict detection.
+        /// </summary>
+        /// <param name="conversationName">The name of the conversation being patched.  For example: "Tenement/Outside/Tatyana Gopnikova"</param>
+        /// <returns>0 or more unique ConversationPatcher objects</returns>
         public IEnumerable<ConversationPatcher> GetPatchersForConversation(string conversationName)
         {
             return ConversationPatchesManager.Instance.GetPatchersForConversation(conversationName);

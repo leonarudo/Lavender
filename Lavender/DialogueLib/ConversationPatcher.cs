@@ -1,41 +1,69 @@
 ﻿using HarmonyLib;
+using Language.Lua;
 using PixelCrushers.DialogueSystem;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Lavender.DialogueLib
 {
-    /**
-     * Allows patching a single conversation
-     * Make a child class and implement the PatchDialogue() function using other functions defined in this class to populate the conversation.
-     **/
+    /// <summary>
+    /// Patch a single conversation.
+    /// Make a child class and implement the PatchDialogue() function utilizing other functions defined in this class to populate the conversation.
+    /// The name of the conversation to patch MUST be passed to the base class constructor.  It is not possible for a single patcher instance to patch multiple conversations.
+    /// For some examples, see Lavender.Test/TestConversationPatcherTatyana.cs and Lavender.Test/TestConversationPatcherTatyana2.cs 
+    ///     these examples both show how to patch the conversation and how to write patchers that are resilient in the face of multiple mods touching the same conversation.
+    /// </summary>
     public abstract class ConversationPatcher
     {
         private PixelCrushers.DialogueSystem.Conversation _Conversation;
         private string _ConversationName;
         private bool RanPatch = false;
-        
+
+        /// <summary>
+        /// The Conversation that we patch
+        /// NOTE: The validity of this property is ONLY guaranteed inside these functions: PatchDialogue(), OnConversationStarted()
+        /// </summary>
         public Conversation Conversation
         {
             get { return _Conversation; }
         }
+
+        /// <summary>
+        /// Unique name of the Conversation that we patch
+        /// This property is always valid.
+        /// </summary>
         public string ConversationName
         {
             get { return _ConversationName; }
         }
 
         #region Dialogue writing tools
-        // Convenience commonly used escape character - it causes the NPC speaker to pause for a second or two before continuing
+        /// <summary>
+        /// Convenience commonly used escape character - it causes the NPC speaker to pause for a second or two before continuing
+        /// </summary>
         public static string Pause = "\\,";
-        // Convenience commonly used escape character - simply renders a double-quote
+
+        /// <summary>
+        /// Convenience commonly used escape character - simply renders a double-quote
+        /// </summary>
         public static string Quote = "\"";
-        // Convenience commonly used Lua function wrapper - wraps {@param text} inside a Lua execution context.
-        // Suitable for player-facing text; the dialogue library identifies the execution context and processes/displays the contents instead (ie {@param text}) 
+
+        /// <summary>
+        /// Convenience commonly used Lua function wrapper - wraps text inside a Lua execution context.
+        /// Suitable for player-facing text; the dialogue library identifies the execution context and processes/displays the contents instead (ie text) 
+        /// </summary>
+        /// <param name="text">The Lua script to wrap.  Must be valid Lua.</param>
+        /// <returns>Wrapped text suitable for insertion into DialogueText.</returns>
         public static string Lua(string text) { return $"[lua({text})]"; }
         #endregion
 
-        // Construct the ConversationPatcher
-        // You must pass in the name of the conversation that this instance will patch.
+
+        /// <summary>
+        /// Construct the ConversationPatcher
+        /// You must pass in the name of the conversation that this instance will patch.  This is unmodifiable once set.
+        /// </summary>
+        /// <param name="conversationName">Name of the conversation that this instance will patch.  Cannot be changed.</param>
         public ConversationPatcher(string conversationName)
         {
             _ConversationName = conversationName;
@@ -57,26 +85,45 @@ namespace Lavender.DialogueLib
 
         #region Implementable functions
 
-        // This is where your conversation patching logic lives
-        // Implement it in your child class
+        /// <summary>
+        /// This is where your conversation patching logic lives
+        /// Implement it in your child class
+        /// The Conversation property is valid within this function.
+        /// </summary>
         protected abstract void PatchDialogue();
 
-        // Implementation stub: Called just before opening the fullscreen dialogue UI
-        // If you want to register Lua functions that are ONLY available while this conversation is active, then do so within this function
+        /// <summary>
+        /// Implementation stub: Called just before opening the fullscreen dialogue UI
+        /// If you want to register Lua functions that are ONLY available while this conversation is active, then do so within this function
+        /// Example available in Lavender.Test/TestConversationPatcherTatyana.cs
+        /// The Conversation property is valid within this function.
+        /// </summary>
+        /// <param name="interactableTalk"></param>
         public virtual void OnConversationStarted(InteractableTalk interactableTalk) { }
 
-        // Implementation stub: Called when the fullscreen dialogue UI has closed
-        // If you have conversation-specific Lua functions, make sure to unregister them here
+        /// <summary>
+        /// Implementation stub: Called when the fullscreen dialogue UI has closed
+        /// If you have conversation-specific Lua functions, make sure to unregister them here
+        /// WARNING! This can be called multiple times (up to 4 times for each OnConversationStarted call).
+        /// 
+        /// Example available in Lavender.Test/TestConversationPatcherTatyana.cs
+        /// The Conversation property is NOT GUARANTEED VALID within this function (conversation ending can happen due to scene transition, which invalidates the Conversation ref).
+        /// </summary>
+        /// <param name="interactableTalk"></param>
         public virtual void OnConversationEnded(InteractableTalk interactableTalk) { }
 
         #endregion
 
         #region Dialogue Patching
 
-        // Create a new DialogueEntry representing the player saying {@param message}.
-        // The entry will do nothing until you {@method Link} to/from it.
-        // Once created, you can freely modify any parameters on the entry.
-        //  Commonly altered params are: conditionsString, userScript
+        /// <summary>
+        /// Create a new DialogueEntry representing the player saying message.
+        /// The entry will do nothing until you Link() to/from it.
+        /// Once created, you can freely modify any parameters on the entry.
+        ///  Commonly altered params are: conditionsString, userScript
+        /// </summary>
+        /// <param name="message">The displayed message.  Length may be clamped by the UI.  Accepts Lua, but does not respect Pause.</param>
+        /// <returns>A new DialogueEntry instance ready to be Link()</returns>
         protected DialogueEntry PlayerSays(string message)
         {
             DialogueEntry entry = new DialogueEntry()
@@ -95,10 +142,14 @@ namespace Lavender.DialogueLib
             return entry;
         }
 
-        // Create a new DialogueEntry representing the NPC saying {@param message}.
-        // The entry will do nothing until you {@method Link} to/from it.
-        // Once created, you can freely modify any parameters on the entry.
-        //  Commonly altered params are: conditionsString, userScript
+        /// <summary>
+        /// Create a new DialogueEntry representing the NPC saying message.
+        /// The entry will do nothing until you Link() to/from it.
+        /// Once created, you can freely modify any parameters on the entry.
+        ///  Commonly altered params are: conditionsString, userScript
+        /// </summary>
+        /// <param name="message">The displayed message.  Length may be clamped by the UI, though it is quite long.  Accepts all standard dialogue markup, including Lua and Pause.</param>
+        /// <returns>A new DialogueEntry instance ready to be Link()</returns>
         protected DialogueEntry NPCSays(string message)
         {
             DialogueEntry entry = new DialogueEntry()
@@ -117,8 +168,12 @@ namespace Lavender.DialogueLib
             return entry;
         }
 
-        // If you want to add a DialogueEntry directly without using the PlayerSays or NPCSays utility methods, this is how.
-        // Do note that you will need to handle DialogueEntry instantiating/initialization yourself.
+        /// <summary>
+        /// If you want to add a DialogueEntry directly without using the PlayerSays or NPCSays utility methods, this is how.
+        /// Do note that you will need to handle DialogueEntry instantiating/initialization yourself.
+        ///     See the implementation of PlayerSays/NPCSays for useful details.
+        /// </summary>
+        /// <param name="entry">DialogueEntry instance to add to the conversation</param>
         protected void AddDialogueEntry(DialogueEntry entry)
         {
             if (Conversation.dialogueEntries.Contains(entry))
@@ -137,9 +192,14 @@ namespace Lavender.DialogueLib
             LavenderLog.DialogueVerbose(Conversation.Title, $" Added new dialogue entry \"{entry.DialogueText}\" to conversation {Conversation.Title} with ID {entry.id}");
         }
 
-        // Create a link from {@param source} to {@param dest}.  Links are navigation paths that determine what responses are available.
-        // Use {@param priority} to specify the PixelCrushers sorting priority of the link.  In most cases, this is ConditionPriority.Normal.
-        // Use {@param Ordering} to give more specific hints about where exactly you want the dest entry to appear in the list of responses.
+        /// <summary>
+        /// Create a link from source to dest.
+        /// Links are navigation paths that determine what responses are available, but are also used for auto-advancing dialogue (f.ex an NPC saying 3 or 4 messages in a row).
+        /// </summary>
+        /// <param name="source">The DialogueEntry the Link originates from</param>
+        /// <param name="dest">The DialogueEntry the Link arrives at</param>
+        /// <param name="ordering">Give hints about where exactly you want the dest entry to appear in the list of responses.  Accepts a LinkOrdering instance.</param>
+        /// <param name="priority">Optional.  Specify the PixelCrushers sorting priority of the link.  In most cases, this is ConditionPriority.Normal.</param>
         protected void Link(DialogueEntry source, DialogueEntry dest, LinkOrdering? ordering = null, ConditionPriority priority = ConditionPriority.Normal)
         {
             if (!Conversation.dialogueEntries.Contains(source) || !Conversation.dialogueEntries.Contains(dest))
@@ -188,20 +248,34 @@ namespace Lavender.DialogueLib
             LavenderLog.DialogueVerbose(Conversation.Title, $"Created link from \"{source.DialogueText}\" ({source.id}) to \"{dest.DialogueText}\" ({dest.id})");
         }
 
-        // Convenience function to find DialogueEntry's that are responses to the provided entry
+        /// <summary>
+        /// See ConversationUtils.GetResponsesTo()
+        /// This is a convenience function that transparently passes the Conversation
+        /// </summary>
+        /// <param name="dialogueEntry"></param>
+        /// <returns></returns>
         protected IEnumerable<DialogueEntry> GetResponsesTo(DialogueEntry dialogueEntry)
         {
             return ConversationUtils.GetResponsesTo(Conversation, dialogueEntry);
         }
 
-        // Convenience function to find only STATIC DialogueEntry's that are responses to the provided entry
-        // A STATIC DialogueEntry does not have any condition set and contains no Lua - ie it is static unchanging text and is always available
+        /// <summary>
+        /// See ConversationUtils.GetStaticResponsesTo()
+        /// This is a convenience function that transparently passes the Conversation
+        /// </summary>
+        /// <param name="dialogueEntry"></param>
+        /// <returns></returns>
         protected IEnumerable<DialogueEntry> GetStaticResponsesTo(DialogueEntry dialogueEntry)
         {
             return ConversationUtils.GetStaticResponsesTo(Conversation, dialogueEntry);
         }
 
-        // Convenience function to find where best to put player responses
+        /// <summary>
+        /// See ConversationUtils.AdvanceToResponsable()
+        /// This is a convenience function that transparently passes the Conversation
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
         protected IEnumerable<DialogueEntry> AdvanceToRespondable(DialogueEntry entry)
         {
             return ConversationUtils.AdvanceToRespondable(Conversation, entry);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Lavender.DialogueLib
 {
@@ -37,6 +38,10 @@ namespace Lavender.DialogueLib
             SaveController.LoadingDone -= OnLoadingDone;
         }
 
+        /// <summary>
+        /// You probably want Lavender.AddConversationPatcher().
+        /// </summary>
+        /// <param name="patcher"></param>
         public void AddConversationPatcher(ConversationPatcher patcher)
         {
             if (!Conversations.Contains(patcher))
@@ -64,6 +69,11 @@ namespace Lavender.DialogueLib
             }
         }
 
+        /// <summary>
+        /// You probably want Lavender.GetPatchersForConversation().
+        /// </summary>
+        /// <param name="conversationName"></param>
+        /// <returns></returns>
         public IEnumerable<ConversationPatcher> GetPatchersForConversation(string conversationName)
         {
             if (ConversationToPatcher.TryGetValue(conversationName, out var patchers))
@@ -73,6 +83,10 @@ namespace Lavender.DialogueLib
             return [];
         }
 
+        // Single access point to generate DialogueEntry IDs
+        // Allows us to dynamically avoid duplicate IDs at runtime
+        // Assumes that NewDialogueEntryStartingID is a high enough number that the vanilla dialogues don't reach it
+        //  If we start getting collisions with vanilla dialogues, we need to increase NewDialogueEntryStartingID
         public int GetNextDialogueEntryID()
         {
             // Intentional that this is a post-op increment
@@ -94,7 +108,14 @@ namespace Lavender.DialogueLib
             NextDialogueEntryID = NewDialogueEntryStartingID;
             foreach (var patcher in Conversations)
             {
-                patcher.TryPatchDialogue();
+                try
+                {
+                    patcher.TryPatchDialogue();
+                }
+                catch (Exception e)
+                {
+                    LavenderLog.Error($"Exception while patching conversation \"{patcher.ConversationName}\": " + e.ToString());
+                }
             }
         }
     }
