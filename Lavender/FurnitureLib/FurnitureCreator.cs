@@ -183,7 +183,7 @@ namespace Lavender.FurnitureLib
 
             LavenderAsset imageAsset = Lavender.GetLavenderAsset(furnitureData.imageName);
             var s = imageAsset != null ? imageAsset.GetAssetData<Sprite>() : null;
-            if (s.GetType() == typeof(Sprite))
+            if (s != null && s.GetType() == typeof(Sprite))
             {
                 image = (Sprite)s;
             }

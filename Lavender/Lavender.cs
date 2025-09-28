@@ -241,39 +241,6 @@ namespace Lavender
 
                 foreach (Item i in Items)
                 {
-                    string path = jsonPath.Substring(0, jsonPath.Length - Path.GetFileName(jsonPath).Length);
-
-                    // Sprite Path
-                    if (i.Appearance.SpritePath.EndsWith(".png") || i.Appearance.SpritePath.EndsWith(".jpg"))
-                    {
-                        i.Appearance.SpritePath = "Lavender_SRC#" + path + i.Appearance.SpritePath;
-                    }
-                    else if (i.Appearance.SpritePath.Contains("#AB"))
-                    {
-                        // path to assetbundle + #AB<Sprite_Name>
-                        i.Appearance.SpritePath = "Lavender_AB#" + path + i.Appearance.SpritePath;
-                    }
-
-                    // Prefab Path
-                    if (i.Appearance.PrefabPath.EndsWith(".obj"))
-                    {
-                        i.Appearance.PrefabPath = "Lavender_SRC#" + path + i.Appearance.PrefabPath;
-                    }
-                    else if (i.Appearance.PrefabPath.Contains("#AB"))
-                    {
-                        i.Appearance.PrefabPath = "Lavender_AB#" + path + i.Appearance.PrefabPath;
-                    }
-
-                    // Prefab Path Many
-                    if (i.Appearance.PrefabPathMany.EndsWith(".obj"))
-                    {
-                        i.Appearance.PrefabPathMany = "Lavender_SRC#" + path + i.Appearance.PrefabPathMany;
-                    }
-                    else if (i.Appearance.PrefabPathMany.Contains("#AB"))
-                    {
-                        i.Appearance.PrefabPathMany = "Lavender_AB#" + path + i.Appearance.PrefabPathMany;
-                    }
-
                     AddCustomItem(i, mod_name);
                 }
             }

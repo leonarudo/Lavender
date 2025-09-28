@@ -3,6 +3,7 @@ using Lavender.RuntimeImporter;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Xml.Linq;
 using UnityEngine;
 
 namespace Lavender.ItemLib
@@ -74,19 +75,17 @@ namespace Lavender.ItemLib
         {
             if(!string.IsNullOrEmpty(__instance.SpritePath))
             {
-                if(__instance.SpritePath.StartsWith("Lavender_SRC#"))
+                if(__instance.SpritePath.StartsWith("#lv_"))
                 {
-                    string spritePath = __instance.SpritePath.Substring("Lavender_SRC#".Length);
-
-                    __instance.Sprite = ImageLoader.LoadSprite(spritePath);
-
-                    return false;
-                }
-                else if (__instance.SpritePath.StartsWith("Lavender_AB#"))
-                {
-                    string spritePath = __instance.SpritePath.Substring("Lavender_AB#".Length);
-
-                    __instance.Sprite = ItemCreator.ItemSpriteFromAssetBundle(spritePath);
+                    LavenderAsset sprite = Lavender.GetLavenderAsset(__instance.SpritePath);
+                    if (sprite != null)
+                    {
+                        var s = sprite.GetAssetData<Sprite>();
+                        if(s != null && s.GetType() == typeof(Sprite))
+                        {
+                            __instance.Sprite = (Sprite)s;
+                        }
+                    }
 
                     return false;
                 }
@@ -102,32 +101,45 @@ namespace Lavender.ItemLib
             bool noSkip = true;
 
             // Prefab
-            if (__instance.PrefabPath.StartsWith("Lavender_SRC#"))
+            if (__instance.PrefabPath.StartsWith("#lv_"))
             {
-                string prefabPath = __instance.PrefabPath.Substring("Lavender_SRC#".Length, __instance.PrefabPath.Length - "Lavender_SRC#".Length - 3);
-
-                if(File.Exists(prefabPath + "png"))
+                LavenderAsset prefabAsset = Lavender.GetLavenderAsset(__instance.PrefabPath);
+                if (prefabAsset != null)
                 {
-                    __instance.Prefab = ItemCreator.ItemPrefabFromOBJ(
-                    prefabPath + "obj",
-                    prefabPath + "png",
-                    item.Title);
-                }
-                else
-                {
-                    __instance.Prefab = ItemCreator.ItemPrefabFromOBJ(
-                    prefabPath + "obj",
-                    prefabPath + "jpg",
-                    item.Title);
-                }
+                    if(prefabAsset.AssetType == AssetType.AssetBundle)
+                    {
+                        GameObject prefab = (GameObject)prefabAsset.GetAssetData<GameObject>();
+                        if (prefab != null)
+                        {
+                            prefab.AddComponent<CollectibleItem>();
+                            prefab.layer = 17;
 
-                noSkip = false;
-            }
-            else if (__instance.PrefabPath.StartsWith("Lavender_AB#"))
-            {
-                string prefabPath = __instance.PrefabPath.Substring("Lavender_AB#".Length);
+                            __instance.Prefab = prefab;
+                        }
+                    }
+                    else if(prefabAsset.AssetType == AssetType.OBJ)
+                    {
+                        var objAsset = prefabAsset.GetAssetData<GameObject>();
+                        if (objAsset != null)
+                        {
+                            LavenderOBJAsset asset = (LavenderOBJAsset)objAsset;
 
-                __instance.Prefab = ItemCreator.ItemPrefabFromAssetBundle(prefabPath);
+                            GameObject obj = new GameObject(item.Title);
+
+                            MeshRenderer meshRenderer = obj.AddComponent<MeshRenderer>();
+                            meshRenderer.materials = asset.materials.ToArray();
+
+                            MeshFilter meshFilter = obj.AddComponent<MeshFilter>();
+                            meshFilter.mesh = asset.mesh;
+
+                            obj.AddComponent<MeshCollider>();
+                            obj.AddComponent<CollectibleItem>();
+                            obj.layer = 17;
+
+                            __instance.Prefab = obj;
+                        }
+                    }
+                }
 
                 noSkip = false;
             }
@@ -135,32 +147,45 @@ namespace Lavender.ItemLib
             // Prefab Many
             if(!string.IsNullOrEmpty(__instance.PrefabPathMany))
             {
-                if (__instance.PrefabPathMany.StartsWith("Lavender_SRC#"))
+                if(__instance.PrefabPathMany.StartsWith("#lv_"))
                 {
-                    string prefabPathMany = __instance.PrefabPathMany.Substring("Lavender_SRC#".Length, __instance.PrefabPathMany.Length - 3);
-
-                    if (File.Exists(prefabPathMany + "png"))
+                    LavenderAsset prefabManyAsset = Lavender.GetLavenderAsset(__instance.PrefabPathMany);
+                    if (prefabManyAsset != null)
                     {
-                        __instance.PrefabMany = ItemCreator.ItemPrefabFromOBJ(
-                        prefabPathMany + "obj",
-                        prefabPathMany + "png",
-                        item.Title);
-                    }
-                    else
-                    {
-                        __instance.PrefabMany = ItemCreator.ItemPrefabFromOBJ(
-                        prefabPathMany + "obj",
-                        prefabPathMany + "jpg",
-                        item.Title);
-                    }
+                        if (prefabManyAsset.AssetType == AssetType.AssetBundle)
+                        {
+                            GameObject prefab = (GameObject)prefabManyAsset.GetAssetData<GameObject>();
+                            if (prefab != null)
+                            {
+                                prefab.AddComponent<CollectibleItem>();
+                                prefab.layer = 17;
 
-                    noSkip = false;
-                }
-                else if (__instance.PrefabPathMany.StartsWith("Lavender_AB#"))
-                {
-                    string prefabPathMany = __instance.PrefabPathMany.Substring("Lavender_AB#".Length);
+                                __instance.PrefabMany = prefab;
+                            }
+                        }
+                        else if (prefabManyAsset.AssetType == AssetType.OBJ)
+                        {
+                            var objAsset = prefabManyAsset.GetAssetData<GameObject>();
+                            if (objAsset != null)
+                            {
+                                LavenderOBJAsset asset = (LavenderOBJAsset)objAsset;
 
-                    __instance.PrefabMany = ItemCreator.ItemPrefabFromAssetBundle(prefabPathMany);
+                                GameObject obj = new GameObject(item.Title);
+
+                                MeshRenderer meshRenderer = obj.AddComponent<MeshRenderer>();
+                                meshRenderer.materials = asset.materials.ToArray();
+
+                                MeshFilter meshFilter = obj.AddComponent<MeshFilter>();
+                                meshFilter.mesh = asset.mesh;
+
+                                obj.AddComponent<MeshCollider>();
+                                obj.AddComponent<CollectibleItem>();
+                                obj.layer = 17;
+
+                                __instance.PrefabMany = obj;
+                            }
+                        }
+                    }
 
                     noSkip = false;
                 }
