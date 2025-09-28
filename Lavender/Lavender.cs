@@ -73,7 +73,14 @@ namespace Lavender
         // assetID: <ModName>-<id> e.g. Lavender-100
         public static LavenderAsset? GetLavenderAsset(string assetID)
         {
-            string[] strings = assetID.Split('-');
+            string[] strings = assetID.Replace("#lv_", "").Split('-');
+
+            if(strings.Length < 2)
+            {
+                LavenderLog.Error($"Wrong assetId format! assetID: '{assetID}', correct format: '<ModName>-<id>' e.g. 'Lavender-100'");
+                return null;
+            }
+
             int id = int.Parse(strings[1]);
 
             List<LavenderAsset> assets = GetLavenderAssetsFromMod(strings[0]);

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using static NPC.NPCPathfinding;
 
 namespace Lavender.FurnitureLib
 {
@@ -104,122 +105,92 @@ namespace Lavender.FurnitureLib
             }
 
             GameObject prefab;
-            GameObject previewPrefab ;
+            GameObject previewPrefab;
             Sprite image;
 
-            if(furnitureData.assetBundlePath.EndsWith(".json"))
+            LavenderAsset prefabAsset = Lavender.GetLavenderAsset(furnitureData.prefabName);
+            if (prefabAsset != null)
             {
-                if(File.Exists(furnitureData.assetBundlePath))
+                if (prefabAsset.AssetType == AssetType.AssetBundle)
+                    prefab = (GameObject)prefabAsset.GetAssetData<GameObject>();
+                else if (prefabAsset.AssetType == AssetType.OBJ)
                 {
-                    try
-                    {
-                        string rawFurnitureAssetData = File.ReadAllText(furnitureData.assetBundlePath);
-                        FurnitureAssetData? furnitureAssetData = JsonConvert.DeserializeObject<FurnitureAssetData>(rawFurnitureAssetData);
-                        if (furnitureAssetData != null)
-                        {
-                            // get the directory path of the json file
-                            string path = furnitureData.assetBundlePath.Substring(0, furnitureData.assetBundlePath.Length - Path.GetFileName(furnitureData.assetBundlePath).Length);
+                    var objAsset = prefabAsset.GetAssetData<GameObject>();
+                    if (objAsset == null) return null;
+                    LavenderOBJAsset asset = (LavenderOBJAsset)objAsset;
 
-                            // Load Sprite
-                            Sprite? s = ImageLoader.LoadSprite(path + furnitureAssetData.imagePath);
-                            if (s != null) image = s;
-                            else
-                            {
-                                LavenderLog.Error($"Error while creating furniture '{furnitureData.title}': couldn't get image '{path + furnitureAssetData.imagePath}'!");
-                                return null;
-                            }
+                    GameObject obj = new GameObject($"{furnitureData.title} - OBJ");
 
-                            // Load the OBJ and create the needed prefabs
-                            GameObject obj = new GameObject($"{furnitureData.title} - OBJ");
+                    MeshRenderer meshRenderer = obj.AddComponent<MeshRenderer>();
+                    MeshFilter meshFilter = obj.AddComponent<MeshFilter>();
 
-                            MeshRenderer meshRenderer = obj.AddComponent<MeshRenderer>();
-                            MeshFilter meshFilter = obj.AddComponent<MeshFilter>();
+                    meshFilter.mesh = asset.mesh;
+                    meshRenderer.materials = asset.materials.ToArray();
 
-                            try
-                            {
-                                if (!File.Exists(path + furnitureAssetData.objPath)) return null;
-
-                                Mesh? mesh = FastObjImporter.Instance.ImportFile(path + furnitureAssetData.objPath);
-
-                                mesh.name = furnitureData.title + "_Mesh";
-                                meshFilter.mesh = mesh;
-
-                                List<Material> materials = new List<Material>();
-                                foreach(string texturePath in furnitureAssetData.texturePaths)
-                                {
-                                    Material mat = new Material(Shader.Find("Standard"));
-                                    mat.mainTexture = ImageLoader.LoadImage(path + texturePath);
-
-                                    materials.Add(mat);
-                                }
-
-                                meshRenderer.materials = materials.ToArray();
-                            }
-                            catch(Exception e)
-                            {
-                                LavenderLog.Error($"Error while creating furniture '{furnitureData.title}': {e}");
-                                return null;
-                            }
-
-                            prefab = GameObject.Instantiate(obj);
-                            prefab.AddComponent<MeshCollider>();
-
-                            previewPrefab = GameObject.Instantiate(obj);
-                            var boxCollider = previewPrefab.AddComponent<BoxCollider>();
-                            boxCollider.isTrigger = true;
-                            var rb = previewPrefab.AddComponent<Rigidbody>();
-                            rb.isKinematic = true;
-                        }
-                        else
-                        {
-                            LavenderLog.Error($"Error while creating furniture '{furnitureData.title}': Error while deserializing FurnitureAssetData at '{furnitureData.assetBundlePath}'!");
-                            return null;
-                        }
-                    }
-                    catch(Exception e)
-                    {
-                        LavenderLog.Error($"Error while creating furniture '{furnitureData.title}': {e}");
-                        return null;
-                    }
+                    prefab = GameObject.Instantiate(obj);
+                    prefab.AddComponent<MeshCollider>();
                 }
                 else
                 {
-                    LavenderLog.Error($"Error while creating furniture '{furnitureData.title}': couldn't get FurnitureAssetData at '{furnitureData.assetBundlePath}'!");
+                    LavenderLog.Error($"Error while creating furniture '{furnitureData.title}': couldn't get Prefab! AssetID: {furnitureData.prefabName}");
                     return null;
                 }
             }
             else
             {
-                // Get the AssetBundle and loads the needed Assets
-                var fileStream = new FileStream(furnitureData.assetBundlePath, FileMode.Open, FileAccess.Read);
-                var assetBundle = AssetBundle.LoadFromStream(fileStream);
-                if (assetBundle == null)
-                {
-                    LavenderLog.Error($"Error while creating furniture '{furnitureData.title}': couldn't get AssetBundle at '{furnitureData.assetBundlePath}'!");
-                    return null;
-                }
+                LavenderLog.Error($"Error while creating furniture '{furnitureData.title}': couldn't get Prefab! AssetID: {furnitureData.prefabName}");
+                return null;
+            }
 
-                image = assetBundle.LoadAsset<Sprite>(furnitureData.imageName);
-                prefab = assetBundle.LoadAsset<GameObject>(furnitureData.prefabName);
-                previewPrefab = assetBundle.LoadAsset<GameObject>(furnitureData.previewPrefabName);
+            LavenderAsset previewPrefabAsset = Lavender.GetLavenderAsset(furnitureData.previewPrefabName);
+            if (previewPrefabAsset != null)
+            {
+                if (previewPrefabAsset.AssetType == AssetType.AssetBundle)
+                    previewPrefab = (GameObject)previewPrefabAsset.GetAssetData<GameObject>();
+                else if (previewPrefabAsset.AssetType == AssetType.OBJ)
+                {
+                    var objAsset = previewPrefabAsset.GetAssetData<GameObject>();
+                    if (objAsset == null) return null;
+                    LavenderOBJAsset asset = (LavenderOBJAsset)objAsset;
 
-                if (image == null)
-                {
-                    LavenderLog.Error($"Error while creating furniture '{furnitureData.title}': couldn't get image '{furnitureData.imageName}'!");
-                    return null;
-                }
-                if (prefab == null)
-                {
-                    LavenderLog.Error($"Error while creating furniture '{furnitureData.title}': couldn't get prefab '{furnitureData.prefabName}'!");
-                    return null;
-                }
-                if (previewPrefab == null)
-                {
-                    LavenderLog.Error($"Error while creating furniture '{furnitureData.title}': couldn't get preview prefab '{furnitureData.previewPrefabName}'!");
-                    return null;
-                }
+                    GameObject obj = new GameObject($"{furnitureData.title} - OBJ");
 
-                assetBundle.Unload(false);
+                    MeshRenderer meshRenderer = obj.AddComponent<MeshRenderer>();
+                    MeshFilter meshFilter = obj.AddComponent<MeshFilter>();
+
+                    meshFilter.mesh = asset.mesh;
+                    meshRenderer.materials = asset.materials.ToArray();
+
+                    previewPrefab = GameObject.Instantiate(obj);
+                    previewPrefab.AddComponent<MeshCollider>();
+
+                    var boxCollider = previewPrefab.AddComponent<BoxCollider>();
+                    boxCollider.isTrigger = true;
+                    var rb = previewPrefab.AddComponent<Rigidbody>();
+                    rb.isKinematic = true;
+                }
+                else
+                {
+                    LavenderLog.Error($"Error while creating furniture '{furnitureData.title}': couldn't get previewPrefab! AssetID: {furnitureData.previewPrefabName}");
+                    return null;
+                }
+            }
+            else
+            {
+                LavenderLog.Error($"Error while creating furniture '{furnitureData.title}': couldn't get previewPrefab! AssetID: {furnitureData.previewPrefabName}");
+                return null;
+            }
+
+            LavenderAsset imageAsset = Lavender.GetLavenderAsset(furnitureData.imageName);
+            var s = imageAsset != null ? imageAsset.GetAssetData<Sprite>() : null;
+            if (s.GetType() == typeof(Sprite))
+            {
+                image = (Sprite)s;
+            }
+            else
+            {
+                LavenderLog.Error($"Error while creating furniture '{furnitureData.title}': couldn't get image! AssetID: {furnitureData.imageName}");
+                return null;
             }
 
             // Creates the Furniture
@@ -260,8 +231,6 @@ namespace Lavender.FurnitureLib
                     FurnitureConfig? furnitureConfig = JsonConvert.DeserializeObject<FurnitureConfig>(rawFurnitureConfig);
                     if (furnitureConfig != null)
                     {
-                        furnitureConfig.assetBundlePath = json_path.Substring(0, json_path.Length - Path.GetFileName(json_path).Length) + furnitureConfig.assetBundlePath;
-
                         Furniture? furniture = Lavender.FurnitureDatabase.Find((Furniture f) => f.title.Equals(furnitureConfig.title) || f.id.Equals(furnitureConfig.id));
                         if (furniture != null && overwrite_db == false)
                         {
