@@ -10,9 +10,9 @@
 		"Stackable": 99,
 		"Appearance": {
 			"Material": "",
-			"SpritePath": "osml_box#AB<osml_box_img>",
+			"SpritePath": "#lv_LavenderTest-101",
 			"ColorValue": "",
-			"PrefabPath": "osml_box#AB<osml_box_pre>",
+			"PrefabPath": "#lv_LavenderTest-102",
 			"PrefabPathMany": ""
 		},
 		"Actions": [],
@@ -34,9 +34,9 @@
 		"Stackable": 99,
 		"Appearance": {
 			"Material": "",
-			"SpritePath": "item_test_img.png",
+			"SpritePath": "#lv_LavenderTest-104",
 			"ColorValue": "",
-			"PrefabPath": "obj_item_test.obj",
+			"PrefabPath": "lv_LavenderTest-105",
 			"PrefabPathMany": ""
 		},
 		"Actions": [],

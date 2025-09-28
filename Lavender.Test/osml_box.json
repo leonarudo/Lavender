@@ -5,10 +5,9 @@
     "priceOC": 30,
     "priceRM": 0,
 
-    "assetBundlePath": "osml_box",
-    "imageName": "osml_box_img",
-    "prefabName": "osml_box_pre",
-    "previewPrefabName": "osml_box_prepre",
+    "imageName": "#lv_LavenderTest-101",
+    "prefabName": "#lv_LavenderTest-102",
+    "previewPrefabName": "#lv_LavenderTest-103",
 
     "category": "Storage",
     "restrictedAreas": [
