@@ -1,17 +1,19 @@
-﻿using System;
+﻿using FullSerializer;
+using HarmonyLib;
+using Lavender.CommandLib;
+using Lavender.DialogueLib;
+using Lavender.FurnitureLib;
+using Lavender.ItemLib;
+using Lavender.RecipeLib;
+using Lavender.RuntimeImporter;
+using Lavender.StorageLib;
+using LitJson;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using HarmonyLib;
-using Lavender.FurnitureLib;
-using Lavender.ItemLib;
-using Lavender.RecipeLib;
-using FullSerializer;
-using Lavender.CommandLib;
-using Lavender.StorageLib;
-using Lavender.DialogueLib;
 
 namespace Lavender
 {
@@ -55,6 +57,61 @@ namespace Lavender
                 LavenderLog.Error(e.ToString());
             }
         }
+
+        #region RuntimeImporter
+
+        public static List<LavenderAssetBundle> lavenderAssets;
+
+        public static void AddLavenderAssets(string ModName, string json_path)
+        {
+            string path = json_path.Substring(0, json_path.Length - Path.GetFileName(json_path).Length);
+
+            LavenderAssetBundle newBundle = new LavenderAssetBundle(ModName, json_path);
+            if(newBundle != null)
+            {
+                foreach(LavenderAsset asset in newBundle.assets)
+                {
+                    asset.Data.path = path + asset.Data.path;
+                }
+
+                lavenderAssets.Add(newBundle);
+            }
+        }
+
+        // assetID: <ModName>-<id> e.g. Lavender-100
+        public static LavenderAsset? GetLavenderAsset(string assetID)
+        {
+            string[] strings = assetID.Replace("#lv_", "").Split('-');
+
+            if(strings.Length < 2)
+            {
+                LavenderLog.Error($"Wrong assetId format! assetID: '{assetID}', correct format: '<ModName>-<id>' e.g. 'Lavender-100'");
+                return null;
+            }
+
+            int id = int.Parse(strings[1]);
+
+            List<LavenderAsset> assets = GetLavenderAssetsFromMod(strings[0]);
+
+            return assets.Find(x => x.ID == id);
+        }
+
+        public static List<LavenderAsset> GetLavenderAssetsFromMod(string ModName)
+        {
+            List<LavenderAsset> result = new List<LavenderAsset>();
+
+            foreach (LavenderAssetBundle bundle in lavenderAssets)
+            {
+                if(bundle.ModName == ModName)
+                {
+                    result.AddRange(bundle.assets);
+                }
+            }
+
+            return result;
+        }
+
+        #endregion
 
         #region FurnitureLib
 
@@ -192,39 +249,6 @@ namespace Lavender
 
                 foreach (Item i in Items)
                 {
-                    string path = jsonPath.Substring(0, jsonPath.Length - Path.GetFileName(jsonPath).Length);
-
-                    // Sprite Path
-                    if (i.Appearance.SpritePath.EndsWith(".png") || i.Appearance.SpritePath.EndsWith(".jpg"))
-                    {
-                        i.Appearance.SpritePath = "Lavender_SRC#" + path + i.Appearance.SpritePath;
-                    }
-                    else if (i.Appearance.SpritePath.Contains("#AB"))
-                    {
-                        // path to assetbundle + #AB<Sprite_Name>
-                        i.Appearance.SpritePath = "Lavender_AB#" + path + i.Appearance.SpritePath;
-                    }
-
-                    // Prefab Path
-                    if (i.Appearance.PrefabPath.EndsWith(".obj"))
-                    {
-                        i.Appearance.PrefabPath = "Lavender_SRC#" + path + i.Appearance.PrefabPath;
-                    }
-                    else if (i.Appearance.PrefabPath.Contains("#AB"))
-                    {
-                        i.Appearance.PrefabPath = "Lavender_AB#" + path + i.Appearance.PrefabPath;
-                    }
-
-                    // Prefab Path Many
-                    if (i.Appearance.PrefabPathMany.EndsWith(".obj"))
-                    {
-                        i.Appearance.PrefabPathMany = "Lavender_SRC#" + path + i.Appearance.PrefabPathMany;
-                    }
-                    else if (i.Appearance.PrefabPathMany.Contains("#AB"))
-                    {
-                        i.Appearance.PrefabPathMany = "Lavender_AB#" + path + i.Appearance.PrefabPathMany;
-                    }
-
                     AddCustomItem(i, mod_name);
                 }
             }
@@ -265,19 +289,6 @@ namespace Lavender
 
                 foreach (Recipe r in Recipes)
                 {
-                    string path = jsonPath.Substring(0, jsonPath.Length - Path.GetFileName(jsonPath).Length);
-
-                    // Sprite Path
-                    if (r.Appearance.SpritePath.EndsWith(".png") || r.Appearance.SpritePath.EndsWith(".jpg"))
-                    {
-                        r.Appearance.SpritePath = "Lavender_SRC#" + path + r.Appearance.SpritePath;
-                    }
-                    else if (r.Appearance.SpritePath.Contains("#AB"))
-                    {
-                        // path to assetbundle + #AB<Sprite_Name>
-                        r.Appearance.SpritePath = "Lavender_AB#" + path + r.Appearance.SpritePath;
-                    }
-
                     AddCustomRecipe(r, mod_name);
                 }
             }

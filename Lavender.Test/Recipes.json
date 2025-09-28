@@ -1,138 +1,211 @@
 [
-  {
-    "ID": 10058,
-    "Name": "Sawdust Override",
-    "Type": "Grinder",
-    "Appearance": {
-      "SpritePath": "",
-      "CraftShowModel": false,
-      "itemToShow": {
-        "name": "",
-        "ID": 0
-      }
-    },
-    "RecipeRequired": false,
-    "RequiredConditions": [
-      "Crude"
-    ],
-    "ExcludingConditions": [],
-    "variantItemCategory": "None",
-    "variantItemAmount": 0,
-    "input": [
-      {
-        "Key": {
-          "name": "Junk Wood",
-          "ID": 14280
-        },
-        "Value": 1.0
-      }
-    ],
-    "output": [
-      {
-        "Key": {
-          "name": "Sawdust",
-          "ID": 30010
-        },
-        "Value": 1.0
-      }
-    ],
-    "outputFail": {
-
-    },
-    "metaSettings": {
-      "setIntegrity": 1.0,
-      "setIntegrityFail": 0.5,
-      "useAmmoAsInput": true,
-      "setAmmoOfMax": 1.0,
-      "setAmmoOfMaxFail": 0.0,
-      "useLiquidContainers": false,
-      "returnLiquidContainers": true,
-      "putLiquidsIntoContainer": {
-        "name": "Open Sewer Coin",
-        "ID": 0
-      },
-      "qualityFactor": 1.0,
-      "qualityFactorFail": 0.5,
-      "useFixedQuality": false,
-      "fixedQuality": 1.0,
-      "mailName": "",
-      "mailReceiver": {
-        "name": "",
-        "ID": -1
-      }
-    },
-    "FailChance": 0.0,
-    "RelevantSkill": "Manufacturing",
-    "SkillFactor": 10.0,
-    "ProcessTime": 120,
-    "Meta": null
-  },
-  {
-    "ID": 101,
-    "Name": "New Recipe Test",
-    "Type": "Grinder",
-    "Appearance": {
-      "SpritePath": "osml_box#AB<osml_box_img>",
-      "CraftShowModel": true,
-      "itemToShow": {
-        "name": "AssetBundle Item Test",
-        "ID": 101
-      }
-    },
-    "RecipeRequired": false,
-    "RequiredConditions": [
-      "Crude"
-    ],
-    "ExcludingConditions": [],
-    "variantItemCategory": "None",
-    "variantItemAmount": 0,
-    "input": [
-      {
-        "Key": {
-          "name": "AssetBundle Item Test",
-          "ID": 101
-        },
-        "Value": 1.0
-      }
-    ],
-    "output": [
-      {
-        "Key": {
-          "name": "Sawdust",
-          "ID": 30010
-        },
-        "Value": 1.0
-      }
-    ],
-    "outputFail": {
-
-    },
-    "metaSettings": {
-      "setIntegrity": 1.0,
-      "setIntegrityFail": 0.5,
-      "useAmmoAsInput": true,
-      "setAmmoOfMax": 1.0,
-      "setAmmoOfMaxFail": 0.0,
-      "useLiquidContainers": false,
-      "returnLiquidContainers": true,
-      "putLiquidsIntoContainer": {
-        "name": "Open Sewer Coin",
-        "ID": 0
-      },
-      "qualityFactor": 1.0,
-      "qualityFactorFail": 0.5,
-      "useFixedQuality": false,
-      "fixedQuality": 1.0,
-      "mailName": "",
-      "mailReceiver": {
-        "name": "",
-        "ID": -1
-      }
-    },
-    "FailChance": 0.0,
-    "RelevantSkill": "Manufacturing",
-    "SkillFactor": 10.0,
-    "ProcessTime": 120,
-    "Meta": null
-  }
+	{
+		"ID": 10058,
+		"Name": "Sawdust Override",
+		"Type": "Grinder",
+		"Appearance": {
+			"SpritePath": "",
+			"CraftShowModel": false,
+			"itemToShow": {
+				"name": "",
+				"ID": 0
+			}
+		},
+		"RecipeRequired": false,
+		"RequiredConditions": [
+			"Crude"
+		],
+		"ExcludingConditions": [],
+		"variantItemCategory": "None",
+		"variantItemAmount": 0,
+		"input": [
+			{
+				"Key": {
+					"name": "Junk Wood",
+					"ID": 14280
+				},
+				"Value": 1.0
+			}
+		],
+		"output": [
+			{
+				"Key": {
+					"name": "Sawdust",
+					"ID": 30010
+				},
+				"Value": 1.0
+			}
+		],
+		"outputFail": {},
+		"metaSettings": {
+			"setIntegrity": 1.0,
+			"setIntegrityFail": 0.5,
+			"useAmmoAsInput": true,
+			"setAmmoOfMax": 1.0,
+			"setAmmoOfMaxFail": 0.0,
+			"useLiquidContainers": false,
+			"returnLiquidContainers": true,
+			"putLiquidsIntoContainer": {
+				"name": "Open Sewer Coin",
+				"ID": 0
+			},
+			"qualityFactor": 1.0,
+			"qualityFactorFail": 0.5,
+			"useFixedQuality": false,
+			"fixedQuality": 1.0,
+			"mailName": "",
+			"mailReceiver": {
+				"name": "",
+				"ID": -1
+			}
+		},
+		"FailChance": 0.0,
+		"RelevantSkill": "Manufacturing",
+		"SkillFactor": 10.0,
+		"ProcessTime": 120,
+		"Meta": null
+	},
+	{
+		"ID": 101,
+		"Name": "New Recipe Test",
+		"Type": "Grinder",
+		"Appearance": {
+			"SpritePath": "#lv_LavenderTest-101",
+			"CraftShowModel": true,
+			"itemToShow": {
+				"name": "AssetBundle Item Test",
+				"ID": 101
+			}
+		},
+		"RecipeRequired": false,
+		"RequiredConditions": [
+			"Crude"
+		],
+		"ExcludingConditions": [],
+		"variantItemCategory": "None",
+		"variantItemAmount": 0,
+		"input": [
+			{
+				"Key": {
+					"name": "AssetBundle Item Test",
+					"ID": 101
+				},
+				"Value": 1.0
+			}
+		],
+		"output": [
+			{
+				"Key": {
+					"name": "Sawdust",
+					"ID": 30010
+				},
+				"Value": 1.0
+			}
+		],
+		"outputFail": {},
+		"metaSettings": {
+			"setIntegrity": 1.0,
+			"setIntegrityFail": 0.5,
+			"useAmmoAsInput": true,
+			"setAmmoOfMax": 1.0,
+			"setAmmoOfMaxFail": 0.0,
+			"useLiquidContainers": false,
+			"returnLiquidContainers": true,
+			"putLiquidsIntoContainer": {
+				"name": "Open Sewer Coin",
+				"ID": 0
+			},
+			"qualityFactor": 1.0,
+			"qualityFactorFail": 0.5,
+			"useFixedQuality": false,
+			"fixedQuality": 1.0,
+			"mailName": "",
+			"mailReceiver": {
+				"name": "",
+				"ID": -1
+			}
+		},
+		"FailChance": 0.0,
+		"RelevantSkill": "Manufacturing",
+		"SkillFactor": 10.0,
+		"ProcessTime": 120,
+		"Meta": null
+	},
+	{
+		"ID": 600001,
+		"Name": "CrashTest",
+		"Type": "Furnace",
+		"useOnlyStolenItems": false,
+		"allowedNonStolenItemsIds": [],
+		"keepItemOwnerOnFail": false,
+		"disableJunkSpawn": false,
+		"Appearance": {
+			"SpritePath": "",
+			"CraftShowModel": false,
+			"itemToShow": {
+				"name": "",
+				"itemnamespace": null,
+				"ID": 0
+			}
+		},
+		"RecipeRequired": false,
+		"RequiredConditions": [
+			102
+		],
+		"ExcludingConditions": [],
+		"RecipeTags": [],
+		"variantItemCategory": "None",
+		"variantItemAmount": 0,
+		"input": [
+			{
+				"Key": {
+					"name": "Metal Shavings",
+					"itemnamespace": null,
+					"ID": 14170
+				},
+				"Value": 1.0
+			}
+		],
+		"output": [
+			{
+				"Key": {
+					"name": "Metal Slab",
+					"itemnamespace": null,
+					"ID": 14150
+				},
+				"Value": 1.0
+			}
+		],
+		"outputFail": {},
+		"metaSettings": {
+			"setIntegrity": 1.0,
+			"setIntegrityFail": 0.5,
+			"useAmmoAsInput": true,
+			"setAmmoOfMax": 1.0,
+			"setAmmoOfMaxFail": 0.0,
+			"ammoInputItemsToIgnore": [],
+			"useLiquidContainers": false,
+			"returnLiquidContainers": true,
+			"putLiquidsIntoContainer": {
+				"name": "",
+				"itemnamespace": null,
+				"ID": 0
+			},
+			"qualityFactor": 1.0,
+			"qualityFactorFail": 0.5,
+			"useFixedQuality": false,
+			"fixedQuality": 1.0,
+			"mailName": "",
+			"mailReceiver": {
+				"name": "",
+				"ID": 0
+			}
+		},
+		"FailChance": 0.0,
+		"RelevantSkill": "Manufacturing",
+		"MinimumSkill": 0,
+		"SkillFactor": 1.0,
+		"ProcessTime": 8000,
+		"Meta": null
+	}
 ]

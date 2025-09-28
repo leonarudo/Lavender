@@ -1,0 +1,45 @@
+[
+	{
+		"ID": 101,
+		"AssetType": "AssetBundle",
+		"Data": {
+			"path": "osml_box",
+			"name": "osml_box_img"
+		}
+	},
+	{
+		"ID": 102,
+		"AssetType": "AssetBundle",
+		"Data": {
+			"path": "osml_box",
+			"name": "osml_box_pre"
+		}
+	},
+	{
+		"ID": 103,
+		"AssetType": "AssetBundle",
+		"Data": {
+			"path": "osml_box",
+			"name": "osml_box_prepre"
+		}
+	},
+	{
+		"ID": 104,
+		"AssetType": "Image",
+		"Data": {
+			"path": "item_test_img.png",
+			"name": ""
+		}
+	},
+	{
+		"ID": 105,
+		"AssetType": "OBJ",
+		"Data": {
+			"path": "obj_item_test.obj",
+			"name": "ObjItemTest",
+			"objTexturePaths": [
+				"obj_item_test.png"
+			]
+		}
+	}
+]
