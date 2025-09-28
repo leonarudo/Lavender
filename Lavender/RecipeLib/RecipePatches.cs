@@ -98,19 +98,17 @@ namespace Lavender.RecipeLib
         {
             if (!string.IsNullOrEmpty(__instance.SpritePath))
             {
-                if (__instance.SpritePath.StartsWith("Lavender_SRC#"))
+                if (__instance.SpritePath.StartsWith("#lv_"))
                 {
-                    string spritePath = __instance.SpritePath.Substring("Lavender_SRC#".Length);
-
-                    __instance.Sprite = ImageLoader.LoadSprite(spritePath);
-
-                    return false;
-                }
-                else if (__instance.SpritePath.StartsWith("Lavender_AB#"))
-                {
-                    string spritePath = __instance.SpritePath.Substring("Lavender_AB#".Length);
-
-                    __instance.Sprite = RecipeCreator.RecipeSpriteFromAssetBundle(spritePath);
+                    LavenderAsset sprite = Lavender.GetLavenderAsset(__instance.SpritePath);
+                    if (sprite != null)
+                    {
+                        var s = sprite.GetAssetData<Sprite>();
+                        if (s != null && s.GetType() == typeof(Sprite))
+                        {
+                            __instance.Sprite = (Sprite)s;
+                        }
+                    }
 
                     return false;
                 }

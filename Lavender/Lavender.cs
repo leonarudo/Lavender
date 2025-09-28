@@ -281,19 +281,6 @@ namespace Lavender
 
                 foreach (Recipe r in Recipes)
                 {
-                    string path = jsonPath.Substring(0, jsonPath.Length - Path.GetFileName(jsonPath).Length);
-
-                    // Sprite Path
-                    if (r.Appearance.SpritePath.EndsWith(".png") || r.Appearance.SpritePath.EndsWith(".jpg"))
-                    {
-                        r.Appearance.SpritePath = "Lavender_SRC#" + path + r.Appearance.SpritePath;
-                    }
-                    else if (r.Appearance.SpritePath.Contains("#AB"))
-                    {
-                        // path to assetbundle + #AB<Sprite_Name>
-                        r.Appearance.SpritePath = "Lavender_AB#" + path + r.Appearance.SpritePath;
-                    }
-
                     AddCustomRecipe(r, mod_name);
                 }
             }
