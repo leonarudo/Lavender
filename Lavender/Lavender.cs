@@ -1,18 +1,19 @@
-﻿using System;
+﻿using FullSerializer;
+using HarmonyLib;
+using Lavender.CommandLib;
+using Lavender.DialogueLib;
+using Lavender.FurnitureLib;
+using Lavender.ItemLib;
+using Lavender.RecipeLib;
+using Lavender.RuntimeImporter;
+using Lavender.StorageLib;
+using LitJson;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using HarmonyLib;
-using Lavender.FurnitureLib;
-using Lavender.ItemLib;
-using Lavender.RecipeLib;
-using FullSerializer;
-using Lavender.CommandLib;
-using Lavender.StorageLib;
-using Lavender.DialogueLib;
-using Lavender.RuntimeImporter;
 
 namespace Lavender
 {
@@ -63,9 +64,16 @@ namespace Lavender
 
         public static void AddLavenderAssets(string ModName, string json_path)
         {
+            string path = json_path.Substring(0, json_path.Length - Path.GetFileName(json_path).Length);
+
             LavenderAssetBundle newBundle = new LavenderAssetBundle(ModName, json_path);
             if(newBundle != null)
             {
+                foreach(LavenderAsset asset in newBundle.assets)
+                {
+                    asset.Data.path = path + asset.Data.path;
+                }
+
                 lavenderAssets.Add(newBundle);
             }
         }
