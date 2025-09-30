@@ -37,7 +37,7 @@ namespace Lavender.RecipeLib
 
             if(info != null)
             {
-                __instance.toolTipInfo.UpdateToolTipInfo(info.TooltipTitel, info.TooltipDetails, true);
+                __instance.toolTipInfo.UpdateToolTipInfo(info.TooltipTitle, info.TooltipDetails, true);
 
                 __instance.modifierImage.sprite = info.Image;
             }
