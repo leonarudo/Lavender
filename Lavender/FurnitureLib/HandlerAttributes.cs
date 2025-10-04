@@ -9,10 +9,12 @@ namespace Lavender.FurnitureLib
     public sealed class FurniturePrefabHandlerAttribute : System.Attribute
     {
         public readonly string FurnitureTitle;
+        public readonly bool IsIngameFurniture;
 
-        public FurniturePrefabHandlerAttribute(string furnitureTitle)
+        public FurniturePrefabHandlerAttribute(string furnitureTitle, bool isIngameFurniture = false)
         {
             FurnitureTitle = furnitureTitle;
+            IsIngameFurniture = isIngameFurniture;
         }
     }
 

@@ -119,6 +119,7 @@ namespace Lavender
         public delegate List<BuildingSystem.FurnitureInfo> FurnitureShopRestockHandler(FurnitureShopName name);
 
         public static Dictionary<string, FurniturePrefabHandler> furniturePrefabHandlers;
+        public static Dictionary<string, FurniturePrefabHandler> ingameFurniturePrefabHandlers;
         public static Dictionary<string, FurnitureShopRestockHandler> furnitureShopRestockHandlers;
 
         public static List<Furniture> FurnitureDatabase;
@@ -157,14 +158,29 @@ namespace Lavender
                 Delegate furnitureHandler = Delegate.CreateDelegate(typeof(FurniturePrefabHandler), method, false);
                 if (furnitureHandler != null)
                 {
-                    if (furniturePrefabHandlers.ContainsKey(attribute.FurnitureTitle))
+                    if (!attribute.IsIngameFurniture)
                     {
-                        LavenderLog.Error($"DuplicateHandlerException: '{method.DeclaringType}.{method.Name}' Only one handler method is allowed per furniture!");
-                        return false;
+                        if (furniturePrefabHandlers.ContainsKey(attribute.FurnitureTitle))
+                        {
+                            LavenderLog.Error($"DuplicateHandlerException: '{method.DeclaringType}.{method.Name}' Only one handler method is allowed per furniture!");
+                            return false;
+                        }
+                        else
+                        {
+                            furniturePrefabHandlers.Add(attribute.FurnitureTitle, (FurniturePrefabHandler)furnitureHandler);
+                        }
                     }
                     else
                     {
-                        furniturePrefabHandlers.Add(attribute.FurnitureTitle, (FurniturePrefabHandler)furnitureHandler);
+                        if (ingameFurniturePrefabHandlers.ContainsKey(attribute.FurnitureTitle))
+                        {
+                            LavenderLog.Error($"DuplicateHandlerException: '{method.DeclaringType}.{method.Name}' Only one handler method is allowed per furniture!");
+                            return false;
+                        }
+                        else
+                        {
+                            ingameFurniturePrefabHandlers.Add(attribute.FurnitureTitle, (FurniturePrefabHandler)furnitureHandler);
+                        }
                     }
                 }
                 else

@@ -39,6 +39,22 @@ namespace Lavender.FurnitureLib
             return true;
         }
 
+        [HarmonyPatch(typeof(SavableScriptableObject), nameof(SavableScriptableObject.LoadFromPath), new Type[] { })]
+        [HarmonyPostfix]
+        static void SavableScriptableObject_LoadFromPath_Postfix(SavableScriptableObject __instance, ref ScriptableObject __result)
+        {
+            if(__instance.GetType() == typeof(Furniture))
+            {
+                Furniture furniture = (Furniture) __instance;
+                if(Lavender.ingameFurniturePrefabHandlers.TryGetValue(furniture.title, out Lavender.FurniturePrefabHandler handler))
+                {
+                    furniture.prefab = handler.Invoke(furniture.prefab);
+                    __result = furniture;
+                    LavenderLog.Log($"Patched {furniture.title} prefab!");
+                }
+            }
+        }
+
         [HarmonyPatch(typeof(FurnitureShop), nameof(FurnitureShop.AddItem))]
         [HarmonyPrefix]
         static bool FurnitureShop_AddFurniture_Prefix(FurnitureShop __instance,ref bool __result, Furniture item, object meta, int amount)

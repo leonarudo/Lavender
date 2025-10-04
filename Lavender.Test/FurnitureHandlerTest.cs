@@ -21,6 +21,12 @@ namespace Lavender.Test
             return gameObject;
         }
 
+        [FurniturePrefabHandlerAttribute("Pallet", true)]
+        public static GameObject inagmePrefabPatchTest(GameObject gameObject)
+        {
+            return gameObject;
+        }
+
         [FurnitureShopRestockHandlerAttribute("LavenderTest")]
         public static List<BuildingSystem.FurnitureInfo> furShopRestockHandler(FurnitureShopName name)
         {
