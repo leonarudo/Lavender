@@ -41,11 +41,14 @@ namespace Lavender.FurnitureLib
 
         [HarmonyPatch(typeof(SavableScriptableObject), nameof(SavableScriptableObject.LoadFromPath), new Type[] { })]
         [HarmonyPostfix]
-        static void SavableScriptableObject_LoadFromPath_Postfix(SavableScriptableObject __instance, ref ScriptableObject __result)
+        static void SavableScriptableObject_LoadFromPath_Postfix(ref ScriptableObject __result)
         {
-            if(__instance.GetType() == typeof(Furniture))
+            if(__result == null)
+                return;
+
+            if(__result.GetType() == typeof(Furniture))
             {
-                Furniture furniture = (Furniture) __instance;
+                Furniture furniture = (Furniture) __result;
                 if(Lavender.ingameFurniturePrefabHandlers.TryGetValue(furniture.title, out Lavender.FurniturePrefabHandler handler))
                 {
                     furniture.prefab = handler.Invoke(furniture.prefab);
