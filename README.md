@@ -11,8 +11,8 @@
 
 **Lavender** is a powerful and user-friendly library mod designed to simplify the process of modding the game [Obenseuer](https://store.steampowered.com/app/951240/Obenseuer/) using BepInEx as mod loader.
 ## Nuget
-- **.Net CLI:** ``dotnet add package Lavender --version 0.5.0``
-- **PackageReference:** ``<PackageReference Include="Lavender" Version="0.5.0" />``
+- **.Net CLI:** ``dotnet add package Lavender --version 6.0.0``
+- **PackageReference:** ``<PackageReference Include="Lavender" Version="6.0.0" />``
 
 ## Documentation
 Looking for help or want to learn more? Check out the full documentation and step-by-step guides at [Lavender-Docs](https://leonarudo.github.io/Lavender-Docs/).
