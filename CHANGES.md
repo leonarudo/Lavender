@@ -1,4 +1,35 @@
 # Upcoming
+# v6.0 (January 4th 2026) - Obenseuer v0.4.17
+*changed GitHub and API version labeling to the one used on discord! (v0.6.0 -> v6.0)*
+## Runtime Importer
+- added LavenderAsset (LVA)
+  - added lavenderAssets List
+  - added AddLavenderAssets
+  - added GetLavenderAsset
+  - added GetLavenderAssetsFromMod
+- added LavenderAssetBundle
+
+## Furniture
+- removed FurnitureAssetData
+- updated FurnitureLib to use LVA 
+- added 'InGame' Furniture Prefab Patching
+
+## Item
+- removed ItemCreator
+- updated ItemLib to use LVA
+
+## Recipe
+- removed RecipeCreator
+- updated RecipeLib to use LVA
+
+## Dialogue
+- improved in-code documentation for DialogueLib
+- made ConversationUtils static
+- small tweaks (mostly stability tweaks)
+
+## Patches
+- added SavableScriptableObject.LoadFromPath Postfix
+
 # v0.5.0 (June 7th 2025)
 ## DialogueLib 
 - added ConversationPatcher

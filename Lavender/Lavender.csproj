@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <Version>0.5.0</Version>
+    <Version>6.0.0</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/leonarudo/Lavender</RepositoryUrl>
     <Description>Lavender is a powerful and user-friendly library mod designed to simplify the process of modding the game Obenseuer using BepInEx as mod loader.</Description>

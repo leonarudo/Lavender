@@ -60,17 +60,19 @@ namespace Lavender.FurnitureLib
 
         [HarmonyPatch(typeof(FurnitureShop), nameof(FurnitureShop.AddItem))]
         [HarmonyPrefix]
-        static bool FurnitureShop_AddFurniture_Prefix(FurnitureShop __instance,ref bool __result, Furniture item, object meta, int amount)
+        static bool FurnitureShop_AddFurniture_Prefix(FurnitureShop __instance,ref bool __result, Furniture item, object meta, GameObject gameObject, int amount)
         {
             BuildingSystem.FurnitureInfo furnitureInfo = __instance.availableFurnitures.Find((BuildingSystem.FurnitureInfo f) => f.furniture.title == item.title);
             if (furnitureInfo == null || furnitureInfo.furniture == null)
             {
+                TaskItem taskItem = Furniture.CreateTaskItem(item, meta as BuildingSystem.FurnitureInfo.Meta, null);
+                /*
                 TaskItem taskItem = (TaskItem)ScriptableObject.CreateInstance(typeof(TaskItem));
                 taskItem.itemName = item.title;
                 taskItem.itemDetails = item.details;
                 taskItem.image = item.image;
-                taskItem.itemType = TaskItem.Type.Furnitures;
-                __instance.availableFurnitures.Add(new BuildingSystem.FurnitureInfo(item, new BuildingSystem.FurnitureInfo.Meta(), taskItem, null, amount, null));
+                taskItem.itemType = TaskItem.Type.Furnitures;*/
+                __instance.availableFurnitures.Add(new BuildingSystem.FurnitureInfo(item, new BuildingSystem.FurnitureInfo.Meta(), taskItem, gameObject, amount, null));
                 __result = true;
             }
             furnitureInfo.amount += amount;
@@ -85,6 +87,7 @@ namespace Lavender.FurnitureLib
         static bool FurnitureShop_UpdateShopItems_Postfix(FurnitureShop __instance)
         {
             __instance.availableFurnitures.Clear();
+            __instance.loadedCustomImages.Clear();
             FurnitureShopName name = (__instance.title == "" ? FurnitureShopName.OneStopShop : 
                 (__instance.title == "Möbelmann Furnitures" ? FurnitureShopName.MoebelmannFurnitures : 
                 (__instance.title == "Jonasson's Shop" ? FurnitureShopName.SamuelJonasson : 

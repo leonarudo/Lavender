@@ -58,7 +58,7 @@ namespace Lavender.ItemLib
 
         [HarmonyPatch(typeof(ItemOperations), nameof(ItemOperations.SetCollectibleItemValues))]
         [HarmonyPostfix]
-        static void ItemOperations_SetCollectibleItemValues_Postfix(ItemStack item, GameObject gameObject)
+        static void ItemOperations_SetCollectibleItemValues_Postfix(ItemStack item, GameObject gameObject, bool noExpirationTimer)
         {
             CollectibleItem component = gameObject.GetComponent<CollectibleItem>();
             if (component != null)

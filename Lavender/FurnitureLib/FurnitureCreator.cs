@@ -20,7 +20,7 @@ namespace Lavender.FurnitureLib
             return gameObject;
         }
 
-        public static Furniture NewFurniture(string id, string title, Sprite image, string details, Furniture.Category category, int priceOC, int priceRM, GameObject furniturePrefab, GameObject furniturePreviewPrefab, Furniture.BuildingArea[] restrictedArea, List<Furniture.ReseourceItem> dismantleItems, FurniturePlaceType placeType, Furniture.DisplayStyle displayStyle = Furniture.DisplayStyle.Default, int displayRotationY = 0)
+        public static Furniture NewFurniture(string id, string title, Sprite image, string details, Furniture.Category category, int priceOC, int priceRM, GameObject furniturePrefab, GameObject furniturePreviewPrefab, Furniture.BuildingArea[] restrictedArea, List<Furniture.ReseourceItem> dismantleItems, FurniturePlaceType placeType, Furniture.DisplayStyle displayStyle = Furniture.DisplayStyle.Default, int displayRotationY = 0, bool trash = false)
         {
             Furniture furniture = ScriptableObject.CreateInstance<Furniture>();
 
@@ -208,7 +208,8 @@ namespace Lavender.FurnitureLib
                 new List<Furniture.ReseourceItem>(),
                 furnitureData.placeType,
                 (Furniture.DisplayStyle)furnitureData.displayStyle,
-                furnitureData.displayRotationY
+                furnitureData.displayRotationY,
+                furnitureData.trash
             );
 
             return furniture;

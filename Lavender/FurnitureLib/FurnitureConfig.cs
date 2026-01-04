@@ -30,6 +30,11 @@ namespace Lavender.FurnitureLib
         public int priceRM;
 
         /// <summary>
+        /// ?
+        /// </summary>
+        public bool trash;
+
+        /// <summary>
         /// LavenderAsset-ID 'ModName-id' e.g. Lavender-100
         /// </summary>
         public string imageName;
@@ -41,6 +46,15 @@ namespace Lavender.FurnitureLib
         /// LavenderAsset-ID 'ModName-id' e.g. Lavender-100
         /// </summary>
         public string previewPrefabName;
+
+        /*
+         * To do:
+         * 
+
+        /// <summary>
+        /// LavenderAsset-ID 'ModName-id' e.g. Lavender-100
+        /// </summary>
+        public string customDisplayPrefab; */
 
         /// <summary>
         /// The category of the Furniture
@@ -100,7 +114,8 @@ namespace Lavender.FurnitureLib
         Flags,
         LicensePlates,
         Kitchen,
-        Tank
+        Tank,
+        None
     }
 
     [JsonConverter(typeof(StringEnumConverter))]
@@ -119,7 +134,10 @@ namespace Lavender.FurnitureLib
         PlayerApartment,
         Workshop,
         Outside,
-        Greenhouse
+        Greenhouse,
+        Store,
+        Communal,
+        Public
     }
 
     [JsonConverter(typeof(StringEnumConverter))]
