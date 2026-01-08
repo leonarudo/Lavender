@@ -12,6 +12,11 @@ namespace Lavender
         public ConfigEntry<bool> UseBepinexLog = config.Bind<bool>("Log", "UseBepinexLog", false, "Send logging through the BepinEx Plugin logger");
         public ConfigEntry<bool> SceneLoadingDoneNotification = config.Bind<bool>("Log", "SceneLoadingDoneNotification", true, "Enable 'Scene Loading Done' Notification");
 
+        #region Data Only Mods
+        public ConfigEntry<bool> EnableDataOnlyMods = config.Bind<bool>("Data Only Mods", "Enabled", true, "Enable Lavender searching for and loading data-only mods");
+
+        #endregion
+
         #region Plugin developer Tools
         public ConfigEntry<bool> DialoguePatcherVerboseLogging = config.Bind<bool>("Developer Tools", "DialoguePatcherVerbose", false, "Enable verbose logging when patching dialogues");
         public ConfigEntry<string> EnabledVerboseConversations = config.Bind<string>("Developer Tools", "EnabledVerboseConversations", "", 
