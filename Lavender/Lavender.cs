@@ -62,7 +62,7 @@ namespace Lavender
 
         public static List<LavenderAssetBundle> lavenderAssets;
 
-        public static void AddLavenderAssets(string ModName, string json_path)
+        public static void AddLavenderAssets(string json_path, string ModName)
         {
             string path = json_path.Substring(0, json_path.Length - Path.GetFileName(json_path).Length);
 

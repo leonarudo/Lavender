@@ -20,7 +20,7 @@ namespace Lavender.Test
             SaveController.LoadingDone += onLoadingDone;
 
             string lvAssetPath = Path.Combine(Assembly.GetExecutingAssembly().Location.Substring(0, Assembly.GetExecutingAssembly().Location.Length - 17), "TestLvAssets.json");
-            Lavender.AddLavenderAssets("LavenderTest", lvAssetPath);
+            Lavender.AddLavenderAssets(lvAssetPath, "LavenderTest");
 
             Lavender.AddFurniturePrefabHandlers(typeof(FurnitureHandlerTest));
             Lavender.AddFurnitureShopRestockHandlers(typeof(FurnitureHandlerTest));
