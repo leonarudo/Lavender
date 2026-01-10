@@ -4,6 +4,7 @@ using Lavender.DataOnlyModLib;
 using Lavender.RecipeLib;
 using Lavender.RuntimeImporter;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -41,6 +42,8 @@ namespace Lavender
 
             new Lavender();
 
+            DataOnlyModManager.Init();
+
             SceneManager.sceneUnloaded += OnSceneUnloaded;
             SceneManager.sceneLoaded += OnSceneLoaded;
             SaveController.LoadingDone += onLoadingDone;
@@ -49,9 +52,9 @@ namespace Lavender
             LavenderLog.Log($"{LCMPluginInfo.PLUGIN_NAME} version {LCMPluginInfo.PLUGIN_VERSION} is loaded!");
             Lavender.instance.isInitialized = true;
 
-            DataOnlyModManager.Run();
-
             Settings.LogUnstableStatus();
+
+            StartCoroutine(DeferredStartup());
         }
 
         private void OnSceneUnloaded(Scene current)
@@ -84,6 +87,12 @@ namespace Lavender
             {
                 Notifications.instance.CreateNotification("Lavender", "Scene Loading Done!", false);
             }
+        }
+
+        private IEnumerator DeferredStartup()
+        {
+            yield return null;
+            DataOnlyModManager.Run();
         }
     }
 }
