@@ -19,20 +19,20 @@ namespace Lavender.Test
 
             SaveController.LoadingDone += onLoadingDone;
 
-            string lvAssetPath = Path.Combine(Assembly.GetExecutingAssembly().Location.Substring(0, Assembly.GetExecutingAssembly().Location.Length - 17), "TestLvAssets.json");
+            string lvAssetPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "TestLvAssets.json");
             Lavender.AddLavenderAssets(lvAssetPath, "LavenderTest");
 
             Lavender.AddFurniturePrefabHandlers(typeof(FurnitureHandlerTest));
             Lavender.AddFurnitureShopRestockHandlers(typeof(FurnitureHandlerTest));
 
             // Item test
-            string itemsPath = Path.Combine(Assembly.GetExecutingAssembly().Location.Substring(0, Assembly.GetExecutingAssembly().Location.Length - 17), "Items.json");
+            string itemsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Items.json");
             Lavender.AddCustomItemsFromJson(itemsPath, LCMPluginInfo.PLUGIN_NAME);
 
-            string recipesPath = Path.Combine(Assembly.GetExecutingAssembly().Location.Substring(0, Assembly.GetExecutingAssembly().Location.Length - 17), "Recipes.json");
+            string recipesPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Recipes.json");
             Lavender.AddCustomRecipesFromJson(recipesPath, LCMPluginInfo.PLUGIN_NAME);
 
-            string imagePath = Path.Combine(Assembly.GetExecutingAssembly().Location.Substring(0, Assembly.GetExecutingAssembly().Location.Length - 17), "item_test_img.png");
+            string imagePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "item_test_img.png");
             Lavender.AddModifierInfo(new RecipeLib.ModifierInfo(101, "Nextej Modifier Test", "Test, test, 123..", RuntimeImporter.ImageLoader.LoadSprite(imagePath)));
             Lavender.AddModifierToCraftingBase("Brick Furnace", 101);
 
@@ -40,7 +40,7 @@ namespace Lavender.Test
             CommandManager.RegisterCommand(new TestCommandEcho());
 
             //Storage test
-            string storageSettingsPath = Path.Combine(Assembly.GetExecutingAssembly().Location.Substring(0, Assembly.GetExecutingAssembly().Location.Length - 17), "StorageSettings.json");
+            string storageSettingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "StorageSettings.json");
             Lavender.AddCustomStorageCategoryFromJson(storageSettingsPath, LCMPluginInfo.PLUGIN_NAME);
 
 
@@ -65,7 +65,7 @@ namespace Lavender.Test
         private void onLoadingDone()
         {
             // !Only add Furniture after Loading is done
-            string path = Path.Combine(Assembly.GetExecutingAssembly().Location.Substring(0, Assembly.GetExecutingAssembly().Location.Length - 17), "osml_box.json");
+            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "osml_box.json");
 
             Furniture? f = FurnitureCreator.Create(path);
             if (f != null) f.GiveItem();

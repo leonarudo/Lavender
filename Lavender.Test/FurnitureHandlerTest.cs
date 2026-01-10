@@ -32,7 +32,7 @@ namespace Lavender.Test
         {
             List<BuildingSystem.FurnitureInfo> restock = new List<BuildingSystem.FurnitureInfo>();
 
-            string path = Path.Combine(Assembly.GetExecutingAssembly().Location.Substring(0, Assembly.GetExecutingAssembly().Location.Length - 17), "osml_box.json");
+            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "osml_box.json");
 
             BuildingSystem.FurnitureInfo? info = FurnitureCreator.CreateShopFurniture(path, 20);
             if(info != null) restock.Add(info);
