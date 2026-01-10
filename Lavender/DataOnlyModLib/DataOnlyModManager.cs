@@ -235,8 +235,7 @@ namespace Lavender.DataOnlyModLib
                         string f = Path.Combine(modRoot, file);
                         if (File.Exists(f))
                         {
-                            // Why is the mod name/json file path order reversed for this one function?
-                            int numLoadedAssets = Lavender.AddLavenderAssets(mod.ModName, f);
+                            int numLoadedAssets = Lavender.AddLavenderAssets(f, mod.ModName);
                             if (numLoadedAssets != 0)
                             {
                                 loadedAssetBundles++;
