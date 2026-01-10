@@ -1,0 +1,50 @@
+[
+	{
+		"ID": 111,
+		"Title": "AssetBundle Item Test (DOM)",
+		"Categories": [
+			"Test"
+		],
+		"Value": 1,
+		"Description": "Test! 1,2,3...",
+		"Stackable": 99,
+		"Appearance": {
+			"Material": "",
+			"SpritePath": "#lv_LavenderTestDOM-101",
+			"ColorValue": "",
+			"PrefabPath": "#lv_LavenderTestDOM-102",
+			"PrefabPathMany": ""
+		},
+		"Actions": [],
+		"Attachments": {
+			"Name": "",
+			"Attachment1": "none",
+			"Attachment2": "none"
+		},
+		"Meta": []
+	},
+	{
+		"ID": 112,
+		"Title": "OBJ Item Test (DOM)",
+		"Categories": [
+			"Test"
+		],
+		"Value": 1,
+		"Description": "Test! 1,2,3...",
+		"Stackable": 99,
+		"Appearance": {
+			"Material": "",
+			"SpritePath": "#lv_LavenderTestDOM-104",
+			"ColorValue": "",
+			"PrefabPath": "lv_LavenderTestDOM-105",
+			"PrefabPathMany": ""
+		},
+		"Actions": [],
+		"Attachments": {
+			"Name": "",
+			"Attachment1": "none",
+			"Attachment2": "none"
+		},
+		"Meta": []
+	}
+]

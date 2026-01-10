@@ -1,0 +1,16 @@
+{
+	"ModName": "LavenderTestDOM",
+	"Name": "Lavender Dataonly Mod Test",
+	"Description": "Testing dataonly mod for Lavender",
+	"Version": "0.0.1",
+	
+	"ItemFiles": [
+		"Items.json"
+	],
+	"RecipeFiles": [
+		"Recipes.json"
+	],
+	"AssetBundles": [
+		"TestLvDOMAssets.json"
+	]
+}
