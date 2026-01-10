@@ -14,7 +14,7 @@ namespace Lavender
 
         #region Data Only Mods
         public ConfigEntry<bool> EnableDataOnlyMods = config.Bind<bool>("Data Only Mods", "Enabled", true, "Enable Lavender searching for and loading data-only mods");
-        public ConfigEntry<string> AdditionalDOMPath = config.Bind<string>("Data Only Mods", "DOMSearchPath", "", "Additional locations to search for data-only mods (comma-separated)");
+        public ConfigEntry<string> AdditionalDOMPath = config.Bind<string>("Data Only Mods", "DOMSearchPath", "", "Additional locations to search for data-only mods (semicolon-separated)");
         #endregion
 
         #region Plugin developer Tools
