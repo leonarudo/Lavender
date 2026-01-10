@@ -72,6 +72,7 @@ namespace Lavender.DataOnlyModLib
 
             foreach (string domRoot in potentialDOMRoots)
             {
+                LavenderLog.Detailed($"Inspecting {domRoot} to see if it contains a datamod");
                 DOMInfo? dom = DOMInfo.TryLoadFromFile(domRoot, declarationFileName);
                 if (dom != null)
                 {
@@ -81,8 +82,12 @@ namespace Lavender.DataOnlyModLib
                     }
                     else
                     {
-                        LavenderLog.Detailed($"Dataonly mod '{Path.Combine(path, declarationFileName)}' skipped because criteriaCallback returned false.");
+                        LavenderLog.Detailed($" Dataonly mod {dom.ModName} at '{Path.Combine(path, declarationFileName)}' skipped because criteriaCallback returned false.");
                     }
+                }
+                else
+                {
+                    LavenderLog.Detailed(" DOMInfo did not load from this location.  Presumably, not a datamod.");
                 }
             }
         }
@@ -112,6 +117,7 @@ namespace Lavender.DataOnlyModLib
                 else
                 {
                     // Error logging happens in the IsVersionCompatible call
+                    LavenderLog.Detailed($"Disabled dataonly mod {mod.ModName}");
                     mod.SetDOMState(DOMLoadingState.Error_Incompatible_Version);
                 }
             }
@@ -178,11 +184,20 @@ namespace Lavender.DataOnlyModLib
                         string f = Path.Combine(modRoot, file);
                         if (File.Exists(f))
                         {
-                            loadedItems += Lavender.AddCustomItemsFromJson(f, mod.ModName);
+                            int fileItems = Lavender.AddCustomItemsFromJson(f, mod.ModName);
+                            loadedItems += fileItems;
+                            if (fileItems > 0)
+                            {
+                                LavenderLog.Detailed($"   Loaded {loadedItems} items from {file}");
+                            }
+                            else
+                            {
+                                LavenderLog.Error($"   File {file} in dataonly mod {modRoot} does not contain any items.  Does it have an invalid format/syntax error?");
+                            }
                         }
                         else
                         {
-                            LavenderLog.Error($"  Skipped loading item file because it was missing: {f}");
+                            LavenderLog.Error($"   Skipped loading dataonly mod {mod.ModName} item file because it was missing: {f}");
                         }
                     }
 
@@ -191,7 +206,16 @@ namespace Lavender.DataOnlyModLib
                         string f = Path.Combine(modRoot, file);
                         if (File.Exists(f))
                         {
-                            loadedRecipes += Lavender.AddCustomRecipesFromJson(f, mod.ModName);
+                            int fileRecipes = Lavender.AddCustomRecipesFromJson(f, mod.ModName);
+                            loadedRecipes += fileRecipes;
+                            if (fileRecipes > 0)
+                            {
+                                LavenderLog.Detailed($"   Loaded {fileRecipes} items from {file}");
+                            }
+                            else
+                            {
+                                LavenderLog.Error($"   File {file} in dataonly mod {modRoot} does not contain any recipes.  Does it have an invalid format/syntax error?");
+                            }
                         }
                         else
                         {
@@ -199,7 +223,7 @@ namespace Lavender.DataOnlyModLib
                         }
                     }
 
-                    foreach (string file in mod.Declaration.LavenderAssetBundleFiles)
+                    foreach (string file in mod.Declaration.AssetBundles)
                     {
                         string f = Path.Combine(modRoot, file);
                         if (File.Exists(f))

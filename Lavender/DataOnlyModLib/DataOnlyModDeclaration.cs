@@ -28,9 +28,9 @@ namespace Lavender.DataOnlyModLib
         public string Version { get; set; } = "";
 
         // Where to load data from
-        public List<string> ItemFiles { get; set; } = ["items.json"];
-        public List<string> RecipeFiles { get; set; } = ["recipes.json"];
-        public List<string> LavenderAssetBundleFiles { get; set; } = ["assetbundle.json"];
+        public List<string> ItemFiles { get; set; } = []; // Example value: ["items.json"];
+        public List<string> RecipeFiles { get; set; } = []; // Example value: ["recipes.json"];
+        public List<string> AssetBundles { get; set; } = []; // Example value: ["assetbundle.json"];
     }
 
     public enum DOMLoadingState
@@ -83,7 +83,15 @@ namespace Lavender.DataOnlyModLib
 
                 if (decl == null)
                 {
-                    LavenderLog.Error($"Failed to parse data-only mod declaration file {fullPath} - please check it for syntax errors.");
+                    LavenderLog.Error($"Failed to parse dataonly mod declaration file {fullPath} - please check it for syntax errors.");
+                    return null;
+                }
+
+                LavenderLog.Detailed($" Found dataonly mod with these meta properties: ModName = {decl.ModName}, Name = {decl.Name}, Version = {decl.Version}");
+
+                if (string.IsNullOrEmpty(decl.ModName))
+                {
+                    LavenderLog.Error($"Dataonly mod declaration located at {fullPath} does not contain a ModName.");
                     return null;
                 }
 
@@ -91,7 +99,7 @@ namespace Lavender.DataOnlyModLib
             }
             catch (Exception ex)
             {
-                LavenderLog.Error($"Failed to load data-object mod declaration found at {fullPath}");
+                LavenderLog.Error($"Failed to load dataonly mod declaration found at {fullPath}");
                 LavenderLog.Error(ex.ToString());
             }
 
