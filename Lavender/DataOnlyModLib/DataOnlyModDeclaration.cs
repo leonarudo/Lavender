@@ -118,7 +118,7 @@ namespace Lavender.DataOnlyModLib
         /// <seealso cref="IsErrored()"/>
         public DOMLoadingState State { get; private set; }
 
-        public DOMInfo(DataOnlyModDeclaration declaration, string directory, string declFile)
+        private DOMInfo(DataOnlyModDeclaration declaration, string directory, string declFile)
         {
             Declaration = declaration;
             AbsoluteDirectory = directory;
@@ -127,14 +127,13 @@ namespace Lavender.DataOnlyModLib
 
         /// <summary>
         /// Load a dataonly mod's metadata declaration from the specified directory & file, and construct a new DOMInfo object to track it
-        /// The constructed DOMInfo object must be registered with the DataOnlyModManager to be used.  This is only valid during the GatherDataOnlyMods event.
+        /// The constructed DOMInfo object must be registered with the DataOnlyModManager to be used.
         /// </summary>
         /// <param name="directory">The dataonly mod's directory</param>
         /// <param name="filename">Name of the dataonly mod's declaration file.  Standard filename is "datamod.json"</param>
         /// <returns>On success, a new DOMInfo object representing this dataonly mod.  On failure, logs the error and returns null.</returns>
         /// <seealso cref="DataOnlyModManager.AddPotentialDOM(DOMInfo)"/>
-        /// <seealso cref="DataOnlyModManager.GatherDataOnlyMods"/>
-        public static DOMInfo? TryLoadFromFile(string directory, string filename)
+        internal static DOMInfo? TryLoadFromFile(string directory, string filename)
         {
             string fullPath = Path.Combine(directory, filename);
             if (!File.Exists(fullPath))
