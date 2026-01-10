@@ -44,6 +44,13 @@ namespace Lavender.DataOnlyModLib
 
             defaultSearchPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "datamods");
 
+            if (!Directory.Exists(defaultSearchPath))
+            {
+                // If the datamods directory doesn't exist, create it.  We don't want to early out in case other mods are hooked into GatherDataOnlyMods and search other locations
+                Directory.CreateDirectory(defaultSearchPath);
+                LavenderLog.Log($"Created datamods directory {defaultSearchPath}");
+            }
+
             SearchDirectoryForDOMs(defaultSearchPath);
             GatherDataOnlyMods?.Invoke();
 
