@@ -338,6 +338,12 @@ namespace Lavender
 
         #region StorageLib
 
+        public delegate void OnStorageEnter(GameObject gameObject, bool forceOpen);
+        public delegate void OnStorageExit(GameObject gameObject);
+
+        public static Dictionary<string,  OnStorageEnter> OnStorageEnterCallbacks;
+        public static Dictionary<string , OnStorageExit> OnStorageExitCallbacks;
+
         public static List<StorageCategory> customStorageCategoryDatabase;
         public static List<StorageSpawnCategory> customStorageSpawnCategoryDatabase;
 
@@ -394,6 +400,30 @@ namespace Lavender
             catch (Exception e)
             {
                 LavenderLog.Error($"Error while loading '{mod_name}'s StorageSpawnCategory Database!\nException: {e}");
+            }
+        }
+
+        public static void AddOnStorageEnterCallback(string storage_name, OnStorageEnter callback)
+        {
+            if(!OnStorageEnterCallbacks.ContainsKey(storage_name))
+            {
+                OnStorageEnterCallbacks.Add(storage_name, callback);
+            }
+            else
+            {
+                LavenderLog.Error($"DuplicateHandlerException: '{storage_name}' Only one OnStorageEnter callback is allowed per storage!");
+            }
+        }
+
+        public static void AddOnStorageExitCallback(string storage_name, OnStorageExit callback)
+        {
+            if (!OnStorageExitCallbacks.ContainsKey(storage_name))
+            {
+                OnStorageExitCallbacks.Add(storage_name, callback);
+            }
+            else
+            {
+                LavenderLog.Error($"DuplicateHandlerException: '{storage_name}' Only one OnStorageExit callback is allowed per storage!");
             }
         }
 

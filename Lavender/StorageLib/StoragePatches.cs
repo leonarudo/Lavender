@@ -6,6 +6,40 @@ namespace Lavender.StorageLib
 {
     public static class StoragePatches
     {
+        #region Storage
+
+        [HarmonyPatch(typeof(Storage), nameof(Storage.EnterExternally))]
+        [HarmonyPostfix]
+        static void Storage_EnterExternally_Postfix(Storage __instance, bool forceOpen)
+        {
+            // If forceOpen is ture then the storage was opened using a lockpick
+
+            FurniturePlaceable? furniture = __instance.gameObject.GetComponent<FurniturePlaceable>();
+            string storagFurnitureTitle = furniture.furniture.title;
+
+            if(Lavender.OnStorageEnterCallbacks.TryGetValue(storagFurnitureTitle, out Lavender.OnStorageEnter callback))
+            {
+                callback.Invoke(__instance.gameObject, forceOpen);
+            }
+        }
+
+        [HarmonyPatch(typeof(Storage), nameof(Storage.ExitExternally))]
+        [HarmonyPostfix]
+        static void Storage_ExitExternally_Postfix(Storage __instance)
+        {
+            FurniturePlaceable? furniture = __instance.gameObject.GetComponent<FurniturePlaceable>();
+            string storagFurnitureTitle = furniture.furniture.title;
+
+            if (Lavender.OnStorageExitCallbacks.TryGetValue(storagFurnitureTitle, out Lavender.OnStorageExit callback))
+            {
+                callback.Invoke(__instance.gameObject);
+            }
+        }
+
+        #endregion
+
+        #region StorageCategory & StorageSpawnCategory
+
         [HarmonyPatch(typeof(StorageCategoryDatabase), nameof(StorageCategoryDatabase.DeSerialize))]
         [HarmonyPostfix]
         static void StorageCategoryDatabase_DeSerialize_Postfix(ref object __result, Type type, string serializedState)
@@ -129,5 +163,7 @@ namespace Lavender.StorageLib
                 __result = r;
             }
         }
+
+        #endregion
     }
 }

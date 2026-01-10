@@ -2,6 +2,16 @@
 ## Runtime Importer
 - fixed Lavender.AddLavenderAsset inconsistent param. order
 
+## Storage
+- added OnStorageEnter callback
+  - added AddOnStorageEnterCallback
+- added OnStorageEnter callback
+  - added AddOnStorageExitCallback
+
+## Patches
+- added Storage.EnterExternally Postfix
+- added Storage.ExitExternally Postfix
+
 # v6.0 (January 4th 2026) - Obenseuer v0.4.17
 *changed GitHub and API version labeling to the one used on discord! (v0.6.0 -> v6.0)*
 ## Runtime Importer

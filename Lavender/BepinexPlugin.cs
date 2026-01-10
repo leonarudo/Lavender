@@ -33,6 +33,8 @@ namespace Lavender
             Lavender.appliedCustomCraftingBaseModifiers = new Dictionary<string, int>();
             Lavender.customRecipeDatabase = new List<Recipe>();
 
+            Lavender.OnStorageEnterCallbacks = new Dictionary<string, Lavender.OnStorageEnter>();
+            Lavender.OnStorageExitCallbacks = new Dictionary<string, Lavender.OnStorageExit>();
             Lavender.customStorageCategoryDatabase = new List<StorageCategory>();
             Lavender.customStorageSpawnCategoryDatabase = new List<StorageSpawnCategory>();
 
