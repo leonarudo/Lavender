@@ -42,7 +42,7 @@ namespace Lavender
 
             new Lavender();
 
-            DataOnlyModManager.Init();
+            DataOnlyModManager.Run();
 
             SceneManager.sceneUnloaded += OnSceneUnloaded;
             SceneManager.sceneLoaded += OnSceneLoaded;
@@ -53,8 +53,6 @@ namespace Lavender
             Lavender.instance.isInitialized = true;
 
             Settings.LogUnstableStatus();
-
-            StartCoroutine(DeferredStartup());
         }
 
         private void OnSceneUnloaded(Scene current)
@@ -87,12 +85,6 @@ namespace Lavender
             {
                 Notifications.instance.CreateNotification("Lavender", "Scene Loading Done!", false);
             }
-        }
-
-        private IEnumerator DeferredStartup()
-        {
-            yield return null;
-            DataOnlyModManager.Run();
         }
     }
 }

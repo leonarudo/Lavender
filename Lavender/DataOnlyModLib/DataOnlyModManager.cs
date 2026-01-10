@@ -35,33 +35,6 @@ namespace Lavender.DataOnlyModLib
         /// </summary>
         public const string DOMDeclarationFilename = "datamod.json";
 
-        #region Events
-        public delegate void GatherDataOnlyModsEvt();
-
-        /// <summary>
-        /// This event fires when Lavender is starting to search for and load dataonly mods.
-        /// If you wish to explicitly add dataonly mods or search locations, this is the LAST VALID TIME to do so.
-        /// Ideally you would perform these calls when your plugin receives Awake from BepInEx.
-        /// </summary>
-        /// <seealso cref="AddModSearchPath(string)"/>
-        /// <seealso cref="AddPotentialDOM(DOMInfo)"/>
-        public static event GatherDataOnlyModsEvt? GatherDataOnlyMods;
-        #endregion
-
-        /// <summary>
-        /// Perform any startup initialization
-        /// Loading of dataonly mods is deferred to ensure we have time for all BepInEx plugins to be loaded first
-        /// </summary>
-        internal static void Init()
-        {
-            // Search the BepInEx plugins folder
-            AddModSearchPath(BepInEx.Paths.PluginPath);
-            
-            // TODO - When Steam Workshop gets looked at by Loiste, add support for that.
-            //  We need to work with Loiste to ensure we help them in this effort, and don't cause any headaches or extra work.
-            //  Premature implementation on this front risks creating unnecessary implementation boundaries.
-        }
-
         /// <summary>
         /// Search for and load dataonly mods
         /// Blocking operation; must occur during game startup before the ItemDatabase and RecipeDatabase deserialize from disc
@@ -79,8 +52,22 @@ namespace Lavender.DataOnlyModLib
                 return;
             }
 
-            // Let other mods hook into this, should they have any logic they want to run
-            GatherDataOnlyMods?.Invoke();
+            // Search the BepInEx plugins folder
+            AddModSearchPath(BepInEx.Paths.PluginPath);
+
+            // Any custom search paths from config
+            if (!string.IsNullOrWhiteSpace(BepinexPlugin.Settings.AdditionalDOMPath.Value))
+            {
+                string[] paths = BepinexPlugin.Settings.AdditionalDOMPath.Value.Split(';');
+                for (int i = 0; i < paths.Length; i++)
+                {
+                    string path = paths[i].Trim();
+                    if (Directory.Exists(path))
+                    {
+                        AddModSearchPath(path);
+                    }
+                }
+            }
 
             foreach (string path in searchPaths)
             {
@@ -107,9 +94,8 @@ namespace Lavender.DataOnlyModLib
         /// </summary>
         /// <param name="path">Directory to search for sub-directories containing the declarative dataonly mod file in</param>
         /// <param name="declarationFileName">Optional. If a custom value is provided, searches for files with that name instead.  Includes file extension.</param>
-        /// <param name="criteriaCallback">Optional.  Filtering callback to perform additional validation on a found dataonly mod.</param>
         /// <exception cref="InvalidOperationException">When called after dataonly mod loading has finished.</exception>
-        public static void SearchDirectoryForDOMs(string path, string declarationFileName = DOMDeclarationFilename, Func<DOMInfo, bool>? criteriaCallback = null)
+        internal static void SearchDirectoryForDOMs(string path, string declarationFileName = DOMDeclarationFilename)
         {
             if (hasProcessedPotentialDOMs)
             {
@@ -126,14 +112,7 @@ namespace Lavender.DataOnlyModLib
                 DOMInfo? dom = DOMInfo.TryLoadFromFile(domRoot, declarationFileName);
                 if (dom != null)
                 {
-                    if (criteriaCallback == null || criteriaCallback(dom))
-                    {
-                        AddPotentialDOM(dom);
-                    }
-                    else
-                    {
-                        LavenderLog.Detailed($" Dataonly mod {dom.ModName} at '{Path.Combine(path, declarationFileName)}' skipped because criteriaCallback returned false.");
-                    }
+                    AddPotentialDOM(dom);
                 }
                 else
                 {
@@ -149,7 +128,7 @@ namespace Lavender.DataOnlyModLib
         /// </summary>
         /// <param name="info">Standard <see cref="DOMInfo"/> object representing a dataonly mod</param>
         /// <exception cref="InvalidOperationException">When called after dataonly mod loading has finished.</exception>
-        public static void AddPotentialDOM(DOMInfo info)
+        internal static void AddPotentialDOM(DOMInfo info)
         {
             if (hasProcessedPotentialDOMs)
             {
@@ -171,7 +150,7 @@ namespace Lavender.DataOnlyModLib
         /// </summary>
         /// <param name="path">Path of the directory to add.  Please use absolute directories when possible</param>
         /// <exception cref="InvalidOperationException">When called after dataonly mod loading has finished.</exception>
-        public static void AddModSearchPath(string path)
+        internal static void AddModSearchPath(string path)
         {
             if (hasProcessedPotentialDOMs)
             {
