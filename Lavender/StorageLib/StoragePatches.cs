@@ -15,9 +15,11 @@ namespace Lavender.StorageLib
             // If forceOpen is ture then the storage was opened using a lockpick
 
             FurniturePlaceable? furniture = __instance.gameObject.GetComponent<FurniturePlaceable>();
-            string storagFurnitureTitle = furniture.furniture.title;
+            if (furniture == null || furniture.furniture == null) return; // Check if this storage even is a furniture
 
-            if(Lavender.OnStorageEnterCallbacks.TryGetValue(storagFurnitureTitle, out Lavender.OnStorageEnter callback))
+            string storageFurnitureTitle = furniture.furniture.title;
+
+            if(Lavender.OnStorageEnterCallbacks.TryGetValue(storageFurnitureTitle, out Lavender.OnStorageEnter callback))
             {
                 callback.Invoke(__instance.gameObject, forceOpen);
             }
@@ -28,9 +30,11 @@ namespace Lavender.StorageLib
         static void Storage_ExitExternally_Postfix(Storage __instance)
         {
             FurniturePlaceable? furniture = __instance.gameObject.GetComponent<FurniturePlaceable>();
-            string storagFurnitureTitle = furniture.furniture.title;
+            if (furniture == null || furniture.furniture == null) return; // Check if this storage even is a furniture
 
-            if (Lavender.OnStorageExitCallbacks.TryGetValue(storagFurnitureTitle, out Lavender.OnStorageExit callback))
+            string storageFurnitureTitle = furniture.furniture.title;
+
+            if (Lavender.OnStorageExitCallbacks.TryGetValue(storageFurnitureTitle, out Lavender.OnStorageExit callback))
             {
                 callback.Invoke(__instance.gameObject);
             }
