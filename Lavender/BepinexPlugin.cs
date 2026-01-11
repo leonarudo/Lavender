@@ -76,6 +76,11 @@ namespace Lavender
 
             Lavender.instance.lastLoadedScene = scene.buildIndex;
             Lavender.instance.LoadingDone = false;
+
+            if(scene.buildIndex == 0)
+            {
+                StartCoroutine(GitHubVersionChecker.CheckLatestVersionCoroutine());
+            }
         }
 
         private void onLoadingDone()

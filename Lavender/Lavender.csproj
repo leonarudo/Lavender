@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <Version>6.0.0</Version>
+    <Version>7.0.0</Version>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <RepositoryUrl>https://github.com/leonarudo/Lavender</RepositoryUrl>
     <Description>Lavender is a powerful and user-friendly library mod designed to simplify the process of modding the game Obenseuer using BepInEx as mod loader.</Description>
@@ -43,6 +43,7 @@
 				<Reference Include="$(DependsDir)/Assembly-CSharp-firstpass.dll" Publicize="true" />
 				<Reference Include="$(DependsDir)/UnityEngine.UI.dll" Publicize="true" />
 				<Reference Include="$(DependsDir)/UnityEngine.PhysicsModule.dll" Publicize="true" />
+				<Reference Include="$(DependsDir)/Unity.TextMeshPro.dll" Publicize="true" />
 		</ItemGroup>
 
 		<ItemGroup>
