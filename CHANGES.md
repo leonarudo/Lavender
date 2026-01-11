@@ -1,6 +1,17 @@
 # Upcoming
+## Data Only Mods
+- added DataOnlyModManager
+- added DataOnlyModDeclaration
+
 ## Runtime Importer
 - fixed Lavender.AddLavenderAsset inconsistent param. order
+- changed AddLavenderAssets to return int
+
+## Item
+- changed AddCustomItemsFromJson to return int
+
+## Recipe
+- changed AddCustomRecipesFromJson to return int
 
 ## Storage
 - added OnStorageEnter callback
@@ -11,6 +22,10 @@
 ## Patches
 - added Storage.EnterExternally Postfix
 - added Storage.ExitExternally Postfix
+
+## Settings
+- added EnableDataOnlyMods
+- added AdditionalDOMPath
 
 # v6.0 (January 4th 2026) - Obenseuer v0.4.17
 *changed GitHub and API version labeling to the one used on discord! (v0.6.0 -> v6.0)*
