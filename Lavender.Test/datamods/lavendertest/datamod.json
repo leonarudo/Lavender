@@ -10,7 +10,7 @@
 	"RecipeFiles": [
 		"Recipes.json"
 	],
-	"AssetBundles": [
+	"LvAssetBundles": [
 		"TestLvDOMAssets.json"
 	]
 }
