@@ -73,7 +73,7 @@ namespace Lavender.DataOnlyModLib
         /// Example values: [], ["assets.json"], ["osmo_variants.json", "shoes.json", "hammer_textures.json"]
         /// <see cref="https://leonarudo.github.io/Lavender-Docs/docs/RuntimeImporter/LavenderAsset.html"/>
         /// </summary>
-        public List<string> LvAssetBundles { get; set; } = [];
+        public List<string> LavenderAssetFiles { get; set; } = [];
     }
     
     /// <summary>

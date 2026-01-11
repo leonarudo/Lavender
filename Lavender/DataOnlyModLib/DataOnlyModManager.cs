@@ -291,7 +291,7 @@ namespace Lavender.DataOnlyModLib
                         }
                     }
 
-                    foreach (string file in mod.Declaration.LvAssetBundles)
+                    foreach (string file in mod.Declaration.LavenderAssetFiles)
                     {
                         string f = Path.Combine(modRoot, file);
                         if (File.Exists(f))
