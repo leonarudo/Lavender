@@ -1,0 +1,19 @@
+{
+    "title": "OSML Box",
+    "details": "Hey, this is from a Mod!",
+
+    "priceOC": 30,
+    "priceRM": 0,
+
+    "imageName": "#lv_LavenderTest-101",
+    "prefabName": "#lv_LavenderTest-102",
+    "previewPrefabName": "#lv_LavenderTest-103",
+
+    "category": "Storage",
+    "restrictedAreas": [
+    ],
+
+    "displayStyle": "Default",
+    "placeType": "floor",
+    "displayRotationY": 0
+}

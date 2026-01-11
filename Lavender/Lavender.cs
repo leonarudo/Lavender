@@ -62,7 +62,7 @@ namespace Lavender
 
         public static List<LavenderAssetBundle> lavenderAssets;
 
-        public static void AddLavenderAssets(string json_path, string ModName)
+        public static int AddLavenderAssets(string json_path, string ModName)
         {
             string path = json_path.Substring(0, json_path.Length - Path.GetFileName(json_path).Length);
 
@@ -75,7 +75,11 @@ namespace Lavender
                 }
 
                 lavenderAssets.Add(newBundle);
+
+                return newBundle.assets.Count;
             }
+
+            return 0;
         }
 
         // assetID: <ModName>-<id> e.g. Lavender-100
@@ -251,9 +255,11 @@ namespace Lavender
             customItemDatabase.Add(item);
         }
 
-        public static void AddCustomItemsFromJson(string jsonPath, string mod_name)
+        public static int AddCustomItemsFromJson(string jsonPath, string mod_name)
         {
-            if (!File.Exists(jsonPath)) { LavenderLog.Error($"AddCustomItemsFromJson(): File at path '{jsonPath}' doesn't exists!"); return; }
+            if (!File.Exists(jsonPath)) { LavenderLog.Error($"AddCustomItemsFromJson(): File at path '{jsonPath}' doesn't exists!"); return 0; }
+
+            int added = 0;
 
             try
             {
@@ -266,12 +272,15 @@ namespace Lavender
                 foreach (Item i in Items)
                 {
                     AddCustomItem(i, mod_name);
+                    added++;
                 }
             }
             catch (Exception e)
             {
                 LavenderLog.Error($"Error while loading '{mod_name}'s Item Database!\nException: {e}");
             }
+
+            return added;
         }
 
         #endregion
@@ -291,9 +300,11 @@ namespace Lavender
             customRecipeDatabase.Add(recipe);
         }
 
-        public static void AddCustomRecipesFromJson(string jsonPath, string mod_name)
+        public static int AddCustomRecipesFromJson(string jsonPath, string mod_name)
         {
-            if (!File.Exists(jsonPath)) { LavenderLog.Error($"AddCustomRecipesFromJson(): File at path '{jsonPath}' doesn't exists!"); return; }
+            if (!File.Exists(jsonPath)) { LavenderLog.Error($"AddCustomRecipesFromJson(): File at path '{jsonPath}' doesn't exists!"); return 0; }
+
+            int added = 0;
 
             try
             {
@@ -306,12 +317,15 @@ namespace Lavender
                 foreach (Recipe r in Recipes)
                 {
                     AddCustomRecipe(r, mod_name);
+                    added++;
                 }
             }
             catch (Exception e)
             {
                 LavenderLog.Error($"Error while loading '{mod_name}'s Recipe Database!\nException: {e}");
             }
+
+            return added;
         }
 
         public static void AddModifierToCraftingBase(string manu_name, int modifier_id, bool skip_warnings = false)
