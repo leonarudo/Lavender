@@ -1,4 +1,6 @@
 # Upcoming
+
+# v7.0 (January 18th 2026) - Obenseuer v0.4.17
 ## Data Only Mods
 - added DataOnlyModManager
 - added DataOnlyModDeclaration
@@ -6,6 +8,7 @@
 ## Runtime Importer
 - fixed Lavender.AddLavenderAsset inconsistent param. order
 - changed AddLavenderAssets to return int
+- **changed LavenderAsset.ID from int to string**
 
 ## Item
 - changed AddCustomItemsFromJson to return int
