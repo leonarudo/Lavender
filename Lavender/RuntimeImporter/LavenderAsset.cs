@@ -21,7 +21,7 @@ namespace Lavender.RuntimeImporter
         [JsonIgnore]
         public string ModName { get; set; }
 
-        public int ID { get; set; }
+        public string ID { get; set; }
         public AssetType AssetType { get; set; }
         public AssetData Data { get; set; }
 

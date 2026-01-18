@@ -1,13 +1,11 @@
 ﻿using FullSerializer;
 using HarmonyLib;
-using Lavender.CommandLib;
 using Lavender.DialogueLib;
 using Lavender.FurnitureLib;
 using Lavender.ItemLib;
 using Lavender.RecipeLib;
 using Lavender.RuntimeImporter;
 using Lavender.StorageLib;
-using LitJson;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -89,15 +87,15 @@ namespace Lavender
 
             if(strings.Length < 2)
             {
-                LavenderLog.Error($"Wrong assetId format! assetID: '{assetID}', correct format: '<ModName>-<id>' e.g. 'Lavender-100'");
+                LavenderLog.Error($"Wrong assetId format! assetID: '{assetID}', correct format: '<ModName>-<id>' e.g. 'Lavender-Asset1'");
                 return null;
             }
 
-            int id = int.Parse(strings[1]);
+            //int id = int.Parse(strings[1]);
 
             List<LavenderAsset> assets = GetLavenderAssetsFromMod(strings[0]);
 
-            return assets.Find(x => x.ID == id);
+            return assets.Find(x => x.ID == strings[1]);
         }
 
         public static List<LavenderAsset> GetLavenderAssetsFromMod(string ModName)
