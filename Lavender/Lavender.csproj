@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+		<Version>8.0.0</Version>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<RepositoryUrl>https://github.com/leonarudo/Lavender</RepositoryUrl>
+		<PackageProjectUrl>https://leonarudo.github.io/Lavender-Docs/</PackageProjectUrl>
+    <Description>Lavender is a powerful and user-friendly library mod designed to simplify the process of modding the game Obenseuer using BepInEx5 as mod loader.</Description>
+    <PackageIcon>nuget-sym.png</PackageIcon>
+    <PackageReadmeFile>NUGET-README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\.img\nuget-sym.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\NUGET-README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BepInEx.Analyzers" Version="1.0.8">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="BepInEx.Core" Version="5.4.21" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="UnityEngine.Modules" Version="6000.0.77">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>all</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+	<ItemGroup>
+			<Reference Include="$(DependsDir)/Assembly-CSharp.dll" Publicize="true" />
+			<Reference Include="$(DependsDir)/Assembly-CSharp-firstpass.dll" Publicize="true" />
+			<Reference Include="$(DependsDir)/UnityEngine.UI.dll" Publicize="true" />
+			<Reference Include="$(DependsDir)/Unity.TextMeshPro.dll" Publicize="true" />
+	</ItemGroup>
+
+	<Import Project="$(SolutionDir)Config.Build.user.props" />
+
+</Project>
