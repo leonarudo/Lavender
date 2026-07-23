@@ -26,11 +26,6 @@ namespace Lavender
 
         static Lavender()
         {
-            RenewStaticFields();
-        }
-
-        private static void RenewStaticFields()
-        {
             lavenderContexts = new List<LavenderContext>();
         }
 
@@ -52,7 +47,7 @@ namespace Lavender
             }
         }
 
-        public static List<LavenderContext> lavenderContexts = new();
+        public static List<LavenderContext> lavenderContexts;
 
         /// <summary>
         /// Creates a new LavenderContext for your BepInEx mod or returns an allready existing one for your mod GUID
