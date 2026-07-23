@@ -21,7 +21,7 @@ namespace Lavender
         /// <summary>
         /// You want to execute your mod logic only when LoadingDone = true to make sure that all game logic is already initialized!
         /// </summary>
-        public bool LoadingDone;
+        public bool LoadingDone = false;
 
         static Lavender()
         {
