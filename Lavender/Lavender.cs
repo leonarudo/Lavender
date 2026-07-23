@@ -38,7 +38,7 @@ namespace Lavender
 
             try
             {
-                // harmony.PatchAll()
+                harmony.PatchAll(typeof(CommandLib.CommandPatches));
             }
             catch (Exception e)
             {

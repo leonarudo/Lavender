@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using Lavender.CommandLib;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -24,5 +25,23 @@ namespace Lavender
 
             Lavender.lavenderContexts.Add(this);
         }
+
+        #region CommandLib
+
+        /// <summary>
+        /// Register an IConsoleCommand with the handler
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns>Returns true on success</returns>
+        public bool RegisterCommand(IConsoleCommand command)
+        {
+            if(CommandManager.CommandRegistry.ContainsKey(command.Name)) {  return false; }
+
+            CommandManager.CommandRegistry[command.Name] = (command, this);
+            LavenderLog.Log($"[{ModGUID}] Registering command '{command.Name}'");
+            return true;
+        }
+
+        #endregion
     }
 }
