@@ -1,7 +1,8 @@
-﻿using HarmonyLib;
+﻿using BepInEx;
+using HarmonyLib;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 namespace Lavender
 {
@@ -30,7 +31,7 @@ namespace Lavender
 
         private static void RenewStaticFields()
         {
-
+            lavenderContexts = new List<LavenderContext>();
         }
 
         public Lavender()
@@ -49,6 +50,33 @@ namespace Lavender
                 LavenderLog.Error("Exception while applying Lavender patches:");
                 LavenderLog.Error(e.ToString());
             }
+        }
+
+        public static List<LavenderContext> lavenderContexts = new();
+
+        /// <summary>
+        /// Creates a new LavenderContext for your BepInEx mod or returns an allready existing one for your mod GUID
+        /// </summary>
+        /// <param name="baseUnityPlugin">Your BepInEx plugin</param>
+        /// <returns></returns>
+        public static LavenderContext NewLavenderContext(BaseUnityPlugin baseUnityPlugin)
+        {
+            LavenderContext ctx = lavenderContexts.Find(x => x.ModGUID == baseUnityPlugin.Info.Metadata.GUID);
+
+            if (ctx != null)
+            {
+                return ctx;
+            }
+
+            return new LavenderContext(baseUnityPlugin);
+        }
+
+        /// <summary>
+        /// Sorts the LavenderContext list using the OrdinalIgnoreCase
+        /// </summary>
+        public static void SortLavenderContextList()
+        {
+            lavenderContexts = lavenderContexts.OrderBy(x => x.ModGUID, StringComparer.OrdinalIgnoreCase).ToList();
         }
     }
 }

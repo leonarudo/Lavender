@@ -11,10 +11,13 @@ namespace Lavender.Test
     public class BepinexPlugin : BaseUnityPlugin
     {
         internal static ManualLogSource Log = null!;
+        internal static LavenderContext ctx = null!;
 
         void Awake()
         {
             Log = Logger;
+
+            ctx = Lavender.NewLavenderContext(this);
 
             Log.LogInfo($"Plugin {LPluginInfo.PLUGIN_NAME} version {LPluginInfo.PLUGIN_VERSION} is loaded!");
         }
