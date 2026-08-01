@@ -42,6 +42,25 @@ namespace Lavender
             return true;
         }
 
+        /// <summary>
+        /// Remove an IConsoleCommand with the given name and this LavenderContext as owner
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>Returns false if there isn't any command registered by this name or if this LavenderContext is not the owner</returns>
+        public bool RemoveCommand(string name)
+        {
+            if(CommandManager.CommandRegistry.TryGetValue(name, out var cmd))
+            {
+                if(cmd.Item2.Equals(this))
+                {
+                    CommandManager.CommandRegistry.Remove(name);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         #endregion
     }
 }

@@ -23,5 +23,10 @@ namespace Lavender.Test
 
             Log.LogInfo($"Plugin {LPluginInfo.PLUGIN_NAME} version {LPluginInfo.PLUGIN_VERSION} is loaded!");
         }
+
+        void Start()
+        {
+            TestCommandEcho.InternalTestCase();
+        }
     }
 }

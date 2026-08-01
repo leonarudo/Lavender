@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -7,9 +8,18 @@ namespace Lavender.CommandLib
 {
     public static class CommandManager
     {
-        public static Dictionary<string, (IConsoleCommand, LavenderContext)> CommandRegistry = [];
+        internal static Dictionary<string, (IConsoleCommand, LavenderContext)> CommandRegistry = [];
 
         internal static DeveloperConsole? LastInConsole;
+
+        /// <summary>
+        /// Get the internal CommandRegistry as a ReadOnlyDictionary. Use LavenderContext for adding/removing of Commands!
+        /// </summary>
+        /// <returns></returns>
+        public static ReadOnlyDictionary<string, (IConsoleCommand, LavenderContext)> GetCommandRegistry()
+        {
+            return new ReadOnlyDictionary<string, (IConsoleCommand, LavenderContext)>(CommandRegistry);
+        }
 
         internal static bool RunCommand(string cmdName, string[] args)
         {
