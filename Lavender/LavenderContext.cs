@@ -1,8 +1,11 @@
 ﻿using BepInEx;
 using Lavender.CommandLib;
+using Lavender.RuntimeImporter;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using static UnityEngine.InputForUI.CommandEvent;
 
 namespace Lavender
 {
@@ -54,11 +57,72 @@ namespace Lavender
                 if(cmd.Item2.Equals(this))
                 {
                     CommandManager.CommandRegistry.Remove(name);
+                    LavenderLog.Log($"[{ModGUID}] Removing command '{name}'");
                     return true;
                 }
             }
 
             return false;
+        }
+
+        #endregion
+
+        #region RuntimeImporter
+
+        /// <summary>
+        /// A Dictionary with all LavenderAssets owned by your context, where the Key is an assets ID for fast lookup.
+        /// </summary>
+        public Dictionary<string, LavenderAsset> OwnedAssets = new Dictionary<string, LavenderAsset>();
+
+        /// <summary>
+        /// Adds all LavenderAssets from the JSON to your Contexts 'OwnedAssets'
+        /// </summary>
+        /// <param name="jsonPath"></param>
+        /// <returns>'-1' if the File couldn't be found! <br></br>
+        /// '0' if there were an exception while reading the JSON <br></br>
+        /// 'Count of all loaded assets' on success!</returns>
+        public int AddLavenderAssets(string jsonPath)
+        {
+            if(File.Exists(jsonPath))
+            {
+                try
+                {
+                    string rawJsonData = File.ReadAllText(jsonPath);
+
+                    var settings = new JsonSerializerSettings
+                    {
+                        TypeNameHandling = TypeNameHandling.Auto,
+                        SerializationBinder = Lavender.lvAssetTypeBinder
+                    };
+
+                    List<LavenderAsset>? assets = JsonConvert.DeserializeObject<List<LavenderAsset>>(jsonPath, settings);
+                    if(assets == null)
+                    {
+                        LavenderLog.Error($"Error while deserializing List<LavenderAsset> at '{jsonPath}'!");
+                        return 0;
+                    }
+
+                    foreach(LavenderAsset asset in assets)
+                    {
+                        asset.SrcFilePath = jsonPath;
+
+                        OwnedAssets.Add(asset.ID, asset);
+                    }
+
+                    return assets.Count;
+
+                }
+                catch (Exception e)
+                {
+                    LavenderLog.Error($"[{ModGUID}] AddLavenderAssets: {e}");
+                    return 0;
+                }
+            }
+            else
+            {
+                LavenderLog.Error($"[{ModGUID}] AddLavenderAssets: Couldn't find json at: {jsonPath}");
+                return -1;
+            }
         }
 
         #endregion

@@ -1,5 +1,7 @@
 ﻿using BepInEx;
 using HarmonyLib;
+using Lavender.RuntimeImporter;
+using Lavender.RuntimeImporter.AssetTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +29,12 @@ namespace Lavender
         static Lavender()
         {
             lavenderContexts = new List<LavenderContext>();
+
+            lvAssetTypeBinder = new AssetTypeBinder(
+                // Native LavenderAssetTypes
+                (typeof(AssetBundleAsset),"AssetBundle"),
+                (typeof(ImageAsset), "Image")
+            );
         }
 
         public Lavender()
@@ -46,6 +54,8 @@ namespace Lavender
                 LavenderLog.Error(e.ToString());
             }
         }
+
+        #region LavenderContext
 
         public static List<LavenderContext> lavenderContexts;
 
@@ -73,5 +83,46 @@ namespace Lavender
         {
             lavenderContexts = lavenderContexts.OrderBy(x => x.ModGUID, StringComparer.OrdinalIgnoreCase).ToList();
         }
+
+        #endregion
+
+        #region RuntimeImporter
+
+        internal static AssetTypeBinder lvAssetTypeBinder;
+
+        /// <summary>
+        /// Tries to find the LavenderAsset by its ID 'modguid-id' or '#lv_modguid-id'
+        /// </summary>
+        /// <param name="assetID">Format: 'MOD_GUID-ID' or '#lv_MOD_GUID-ID'</param>
+        /// <returns></returns>
+        public static LavenderAsset? GetLavenderAsset(string assetID)
+        {
+            string[] id = assetID.Replace("#lv_", "").Split('-');
+
+            if (id.Length < 2)
+            {
+                LavenderLog.Error($"[GetLavenderAsset] Wrong assetId format! assetID: '{assetID}', correct format: '<MOD_GUID>-<ID>' e.g. 'Lavender-Asset1'");
+                return null;
+            }
+
+            LavenderContext ctx = lavenderContexts.Find(x => x.ModGUID == id[0]);
+            if (ctx != null)
+            {
+                if (ctx.OwnedAssets.TryGetValue(id[1], out var asset))
+                    return asset;
+                else
+                {
+                    LavenderLog.Error($"[GetLavenderAsset] Couldn't find asset '{assetID}': Couldn't find ID: '{id[1]}'");
+                    return null;
+                }
+            }
+            else
+            {
+                LavenderLog.Error($"[GetLavenderAsset] Couldn't find asset '{assetID}': Couldn't find a context for the MOD_GUID: '{id[0]}'");
+                return null;
+            }
+        }
+
+        #endregion
     }
 }
