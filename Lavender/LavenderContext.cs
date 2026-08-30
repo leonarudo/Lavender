@@ -20,6 +20,8 @@ namespace Lavender
 
         public Version ModVersion { get; private set; }
 
+        public bool HotReloadData = false;
+
         internal LavenderContext(BaseUnityPlugin baseUnityPlugin)
         {
             ModGUID = baseUnityPlugin.Info.Metadata.GUID;
@@ -75,6 +77,11 @@ namespace Lavender
         public Dictionary<string, LavenderAsset> OwnedAssets = new Dictionary<string, LavenderAsset>();
 
         /// <summary>
+        /// A List of all LavenderAsset.json paths owned by your context. 
+        /// </summary>
+        public List<string> OwnedAssetSources = new List<string>();
+
+        /// <summary>
         /// Adds all LavenderAssets from the JSON to your Contexts 'OwnedAssets'
         /// </summary>
         /// <param name="jsonPath"></param>
@@ -108,6 +115,8 @@ namespace Lavender
 
                         OwnedAssets.Add(asset.ID, asset);
                     }
+
+                    OwnedAssetSources.Add(jsonPath);
 
                     return assets.Count;
 

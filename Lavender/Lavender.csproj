@@ -48,6 +48,10 @@
 			<Reference Include="$(DependsDir)/Unity.TextMeshPro.dll" Publicize="true" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="ItemLib\" />
+	</ItemGroup>
+
 	<Import Project="$(SolutionDir)Config.Build.user.props" />
 
 </Project>
