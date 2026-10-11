@@ -70,6 +70,18 @@ namespace Lavender
                 foreach(LavenderAsset asset in newBundle.assets)
                 {
                     asset.Data.path = path + asset.Data.path;
+
+                    // objTexturePaths are relative to the asset json like Data.path.
+                    // Keep a path that only resolves as given (game-root relative or absolute) for older mods.
+                    if (asset.Data.objTexturePaths != null)
+                    {
+                        for (int i = 0; i < asset.Data.objTexturePaths.Length; i++)
+                        {
+                            string texturePath = asset.Data.objTexturePaths[i];
+                            if (!File.Exists(path + texturePath) && File.Exists(texturePath)) continue;
+                            asset.Data.objTexturePaths[i] = path + texturePath;
+                        }
+                    }
                 }
 
                 lavenderAssets.Add(newBundle);

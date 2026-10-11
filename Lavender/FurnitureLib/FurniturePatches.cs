@@ -62,20 +62,27 @@ namespace Lavender.FurnitureLib
         [HarmonyPrefix]
         static bool FurnitureShop_AddFurniture_Prefix(FurnitureShop __instance,ref bool __result, Furniture item, object meta, GameObject gameObject, int amount)
         {
-            BuildingSystem.FurnitureInfo furnitureInfo = __instance.availableFurnitures.Find((BuildingSystem.FurnitureInfo f) => f.furniture.title == item.title);
+            BuildingSystem.FurnitureInfo.Meta furnitureMeta = meta as BuildingSystem.FurnitureInfo.Meta ?? new BuildingSystem.FurnitureInfo.Meta();
+            BuildingSystem.FurnitureInfo furnitureInfo = __instance.availableFurnitures.Find((BuildingSystem.FurnitureInfo f) => f.furniture.title == item.title && furnitureMeta.CompareMeta(f.meta));
             if (furnitureInfo == null || furnitureInfo.furniture == null)
             {
-                TaskItem taskItem = Furniture.CreateTaskItem(item, meta as BuildingSystem.FurnitureInfo.Meta, null);
+                TaskItem taskItem = Furniture.CreateTaskItem(item, furnitureMeta, null);
+                if (furnitureMeta.HasCustomImages)
+                {
+                    __instance.loadedCustomImages.Add(furnitureMeta.customImages[0].path);
+                }
                 /*
                 TaskItem taskItem = (TaskItem)ScriptableObject.CreateInstance(typeof(TaskItem));
                 taskItem.itemName = item.title;
                 taskItem.itemDetails = item.details;
                 taskItem.image = item.image;
                 taskItem.itemType = TaskItem.Type.Furnitures;*/
-                __instance.availableFurnitures.Add(new BuildingSystem.FurnitureInfo(item, new BuildingSystem.FurnitureInfo.Meta(), taskItem, gameObject, amount, null));
-                __result = true;
+                __instance.availableFurnitures.Add(new BuildingSystem.FurnitureInfo(item, furnitureMeta, taskItem, gameObject, amount, null));
             }
-            furnitureInfo.amount += amount;
+            else
+            {
+                furnitureInfo.amount += amount;
+            }
             __result = true;
 
             if (!BepinexPlugin.Settings.FurnitureShop_AddFurniture_Prefix_SkipOriginal.Value) return true;
@@ -116,9 +123,10 @@ namespace Lavender.FurnitureLib
             [typeof(Furniture), typeof(UnityEngine.GameObject), typeof(UnityEngine.GameObject), typeof(int), typeof(BuildingSystem.FurnitureInfo.Meta)],
             [ArgumentType.Normal, ArgumentType.Normal, ArgumentType.Ref, ArgumentType.Normal, ArgumentType.Normal])]
         [HarmonyPrefix]
-        static bool BuildingSystem_AddFurniture_Prefix(BuildingSystem __instance, ref bool __result, Furniture furniture, GameObject gameObject, out GameObject savedGameObject, int amount)
+        static bool BuildingSystem_AddFurniture_Prefix(BuildingSystem __instance, ref bool __result, Furniture furniture, GameObject gameObject, out GameObject savedGameObject, int amount, BuildingSystem.FurnitureInfo.Meta? meta)
         {
-            BuildingSystem.FurnitureInfo furnitureInfo = __instance.availableFurnitures.Find((BuildingSystem.FurnitureInfo f) => f.furniture.title == furniture.title && f.gameObject == null);
+            BuildingSystem.FurnitureInfo.Meta furnitureMeta = meta ?? new BuildingSystem.FurnitureInfo.Meta();
+            BuildingSystem.FurnitureInfo furnitureInfo = __instance.availableFurnitures.Find((BuildingSystem.FurnitureInfo f) => f.furniture.title == furniture.title && f.gameObject == null && furnitureMeta.CompareMeta(f.meta));
             if (gameObject != null)
             {
                 gameObject.transform.SetParent((__instance.inventoryLocation != null) ? __instance.inventoryLocation : __instance.gameObject.transform);
@@ -130,11 +138,11 @@ namespace Lavender.FurnitureLib
                 }
             }
             savedGameObject = gameObject;
-            BuildingSystem.FurnitureInfo info = __instance.availableFurnitures.Find((BuildingSystem.FurnitureInfo f) => f.furniture.title == furniture.title);
-            TaskItem taskItem = __instance.AddTaskItem(furniture, new BuildingSystem.FurnitureInfo.Meta(), info, amount);
+            BuildingSystem.FurnitureInfo info = __instance.availableFurnitures.Find((BuildingSystem.FurnitureInfo f) => f.furniture.title == furniture.title && furnitureMeta.CompareMeta(f.meta));
+            TaskItem taskItem = __instance.AddTaskItem(furniture, furnitureMeta, info, amount);
             if (furnitureInfo == null || furnitureInfo.furniture == null || gameObject != null)
             {
-                __instance.availableFurnitures.Add(new BuildingSystem.FurnitureInfo(furniture, new BuildingSystem.FurnitureInfo.Meta(), taskItem, gameObject, amount, null));
+                __instance.availableFurnitures.Add(new BuildingSystem.FurnitureInfo(furniture, furnitureMeta.Copy(), taskItem, gameObject, amount, null));
                 __instance.availableFurnitures.Sort((BuildingSystem.FurnitureInfo slot1, BuildingSystem.FurnitureInfo slot2) => slot1.furniture.name.CompareTo(slot2.furniture.name));
                 __result = true;
 

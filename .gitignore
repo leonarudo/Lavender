@@ -403,3 +403,6 @@ artifacts/**/*.zip
 *.txt
 artifacts/**
 Config.Build.user.props
+
+# Sample OBJ models used by Lavender.Test (*.obj above targets MSVC object files)
+!Lavender.Test/**/*.obj
